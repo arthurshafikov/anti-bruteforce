@@ -1,1 +1,23 @@
 init
+
+migration databases:
+whitelist_ips
+blacklist_ips
+
+
+routes:
+authorize/ (login, password, ip) (ok:(true, false))
+reset/ (login, ip) 
+add-to-whitelist/ (IP + маска)
+remove-to-whitelist/ (IP + маска)
+add-to-blacklist/ (IP + маска)
+remove-to-blacklist/ (IP + маска)
+
+
+config:
+numberOfAttemptsForLogin - N
+numberOfAttemptsForPassword - M
+numberOfAttemptsForIp - K
+
+
+1. set up github actions for lint and tests
