@@ -1,0 +1,8 @@
+AppConfig:
+  NumberOfAttemptsForLogin: 10
+  NumberOfAttemptsForPassword: 100
+  NumberOfAttemptsForIP: 1000
+LoggerConfig:
+  Level: "DEBUG"
+ServerConfig:
+  Address: ":8123"
