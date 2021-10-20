@@ -7,7 +7,7 @@ build:
 	go build -a -o $(BIN) -ldflags "$(LDFLAGS)" ./cmd
 
 run: build
-	 $(BIN)
+	 DSN="user=homestead password=secret dbname=homestead sslmode=disable" $(BIN) --configFolder ./configs
 
 test: 
 	go test ./...

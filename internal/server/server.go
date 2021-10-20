@@ -7,8 +7,8 @@ type Handler interface {
 	Authorize(*gin.Context)
 	ResetBucket(*gin.Context)
 	AddToWhiteList(*gin.Context)
-	RemoveFromWhiteList(*gin.Context)
 	AddToBlackList(*gin.Context)
+	RemoveFromWhiteList(*gin.Context)
 	RemoveFromBlackList(*gin.Context)
 }
 
@@ -31,9 +31,9 @@ func (s *Server) Serve() {
 	router.POST("/authorize", s.handler.Authorize)
 	router.POST("/bucket/reset", s.handler.ResetBucket)
 	router.POST("/whitelist/add", s.handler.AddToWhiteList)
-	router.POST("/whitelist/remove", s.handler.RemoveFromWhiteList)
+	router.DELETE("/whitelist/remove", s.handler.RemoveFromWhiteList)
 	router.POST("/blacklist/add", s.handler.AddToBlackList)
-	router.POST("/blacklist/remove", s.handler.RemoveFromBlackList)
+	router.DELETE("/blacklist/remove", s.handler.RemoveFromBlackList)
 
 	router.Run(s.address)
 }
