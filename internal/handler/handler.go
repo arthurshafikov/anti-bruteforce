@@ -6,6 +6,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const (
+	QuerySubnetParam        = "subnet"
+	WrongSubnetErrorMessage = "wrong subnet format"
+)
+
 type Storage interface {
 	AddToWhiteList(string) error
 	AddToBlackList(string) error
@@ -46,17 +51,49 @@ func (h *Handler) ResetBucket(c *gin.Context) {
 }
 
 func (h *Handler) AddToWhiteList(c *gin.Context) {
-	panic("Implement me")
-}
+	subnet := c.Query(QuerySubnetParam)
 
-func (h *Handler) RemoveFromWhiteList(c *gin.Context) {
-	panic("Implement me")
+	err := h.Storage.AddToWhiteList(subnet)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, WrongSubnetErrorMessage)
+		return
+	}
+
+	c.JSON(http.StatusCreated, "")
 }
 
 func (h *Handler) AddToBlackList(c *gin.Context) {
-	panic("Implement me")
+	subnet := c.Query(QuerySubnetParam)
+
+	err := h.Storage.AddToBlackList(subnet)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, WrongSubnetErrorMessage)
+		return
+	}
+
+	c.JSON(http.StatusCreated, "")
+}
+
+func (h *Handler) RemoveFromWhiteList(c *gin.Context) {
+	subnet := c.Query(QuerySubnetParam)
+
+	err := h.Storage.RemoveFromWhiteList(subnet)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, WrongSubnetErrorMessage)
+		return
+	}
+
+	c.JSON(http.StatusOK, "")
 }
 
 func (h *Handler) RemoveFromBlackList(c *gin.Context) {
-	panic("Implement me")
+	subnet := c.Query(QuerySubnetParam)
+
+	err := h.Storage.RemoveFromBlackList(subnet)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, WrongSubnetErrorMessage)
+		return
+	}
+
+	c.JSON(http.StatusOK, "")
 }
