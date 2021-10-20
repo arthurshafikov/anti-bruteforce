@@ -1,6 +1,8 @@
 package app
 
 import (
+	"context"
+
 	"github.com/thewolf27/anti-bruteforce/internal/config"
 	"github.com/thewolf27/anti-bruteforce/internal/handler"
 	"github.com/thewolf27/anti-bruteforce/internal/server"
@@ -21,8 +23,11 @@ func NewApp() *App {
 }
 
 func (app *App) Run() {
+	ctx := context.Background()
+
 	logger := logger.NewLogger(app.Config.LoggerConfig.Level)
 	storage := storage.NewStorage(app.Config.StorageConfig.Dsn)
+	storage.Connect(ctx)
 
 	handler := handler.NewHandler(storage, logger)
 

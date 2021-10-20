@@ -45,7 +45,10 @@ func NewConfig() *Config {
 	}
 
 	var config Config
-	viper.Unmarshal(&config)
+	err := viper.Unmarshal(&config)
+	if err != nil {
+		log.Fatalln(err)
+	}
 
 	config.StorageConfig.Dsn = os.Getenv("DSN")
 
@@ -55,5 +58,8 @@ func NewConfig() *Config {
 func parseFlags() {
 	pflag.String("configFolder", "./configs", "path to configs folder")
 	pflag.Parse()
-	viper.BindPFlags(pflag.CommandLine)
+	err := viper.BindPFlags(pflag.CommandLine)
+	if err != nil {
+		log.Fatalln(err)
+	}
 }
