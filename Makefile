@@ -9,10 +9,13 @@ build:
 run: build
 	 $(BIN)
 
+test: 
+	go test ./...
+
 .PHONY: build run test
 
 enterdb:
-	docker exec -it postgres psql -U homestead;
+	docker exec -it ab-postgres psql -U homestead;
 
 up:
 	docker-compose up --build

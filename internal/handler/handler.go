@@ -8,9 +8,11 @@ import (
 
 type Storage interface {
 	AddToWhiteList(string) error
-	RemoveFromWhiteList(string) error
 	AddToBlackList(string) error
+	RemoveFromWhiteList(string) error
 	RemoveFromBlackList(string) error
+	CheckIfIpInWhiteList(string) (bool, error)
+	CheckIfIpInBlackList(string) (bool, error)
 }
 
 type Logger interface {
