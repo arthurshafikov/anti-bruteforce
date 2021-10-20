@@ -1,7 +1,7 @@
 package main
 
-import "fmt"
+import "github.com/thewolf27/anti-bruteforce/internal/app"
 
 func main() {
-	fmt.Println("init")
+	app.NewApp().Run()
 }

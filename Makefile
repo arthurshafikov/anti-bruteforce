@@ -10,3 +10,12 @@ run: build
 	 $(BIN)
 
 .PHONY: build run test
+
+enterdb:
+	docker exec -it postgres psql -U homestead;
+
+up:
+	docker-compose up --build
+
+down:
+	docker-compose down --volumes
