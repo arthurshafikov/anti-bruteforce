@@ -9,9 +9,14 @@ import (
 )
 
 const (
+	// Whitelist_Ips table name
 	WhiteListIpsTable = "whitelist_ips"
+
+	// Blacklist_Ips table name
 	BlackListIpsTable = "blacklist_ips"
-	SubnetColumnName  = "subnet"
+
+	// Subnet column in WhiteList/BlackList Tables
+	SubnetColumnName = "subnet"
 )
 
 type Storage struct {
@@ -79,7 +84,7 @@ func (s *Storage) RemoveFromBlackList(subnet string) error {
 	return nil
 }
 
-func (s *Storage) CheckIfIpInWhiteList(ip string) (bool, error) {
+func (s *Storage) CheckIfIPInWhiteList(ip string) (bool, error) {
 	res, err := s.db.Exec(fmt.Sprintf("SELECT 1 FROM %s WHERE %s >>= $1;", WhiteListIpsTable, SubnetColumnName), ip)
 	if err != nil {
 		return false, err
@@ -91,7 +96,7 @@ func (s *Storage) CheckIfIpInWhiteList(ip string) (bool, error) {
 	return false, nil
 }
 
-func (s *Storage) CheckIfIpInBlackList(ip string) (bool, error) {
+func (s *Storage) CheckIfIPInBlackList(ip string) (bool, error) {
 	res, err := s.db.Exec(fmt.Sprintf("SELECT 1 FROM %s WHERE %s >>= $1;", BlackListIpsTable, SubnetColumnName), ip)
 	if err != nil {
 		return false, err
