@@ -9,13 +9,13 @@ import (
 )
 
 const (
-	// Whitelist_Ips table name
+	// WhiteListIpsTable is a table name.
 	WhiteListIpsTable = "whitelist_ips"
 
-	// Blacklist_Ips table name
+	// BlackListIpsTable is a table name.
 	BlackListIpsTable = "blacklist_ips"
 
-	// Subnet column in WhiteList/BlackList Tables
+	// SubnetColumnName is a column in WhiteList/BlackList Tables.
 	SubnetColumnName = "subnet"
 )
 

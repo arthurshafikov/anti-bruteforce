@@ -1,16 +1,19 @@
 package handler
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/thewolf27/anti-bruteforce/internal/bucket"
+	"github.com/thewolf27/anti-bruteforce/internal/config"
 )
 
 const (
-	// Subnet request parameter key
+	// QuerySubnetParam is a subnet request parameter key.
 	QuerySubnetParam = "subnet"
 
-	// Request wrong subnet format error
+	// WrongSubnetErrorMessage is a request wrong subnet format error.
 	WrongSubnetErrorMessage = "wrong subnet format"
 )
 
@@ -30,14 +33,23 @@ type Logger interface {
 }
 
 type Handler struct {
-	Storage Storage
-	Logger  Logger
+	Storage     Storage
+	Logger      Logger
+	LeakyBucket *bucket.LeakyBucket
 }
 
-func NewHandler(storage Storage, logger Logger) *Handler {
+func NewHandler(ctx context.Context, storage Storage, logger Logger, appConfig config.AppConfig) *Handler {
+	leakyBucket := bucket.NewLeakyBucket(ctx, bucket.AuthorizeLimits{
+		LimitAttemptsForLogin:    appConfig.NumberOfAttemptsForLogin,
+		LimitAttemptsForPassword: appConfig.NumberOfAttemptsForPassword,
+		LimitAttemptsForIP:       appConfig.NumberOfAttemptsForIP,
+	})
+	go leakyBucket.Leak()
+
 	return &Handler{
-		Storage: storage,
-		Logger:  logger,
+		Storage:     storage,
+		Logger:      logger,
+		LeakyBucket: leakyBucket,
 	}
 }
 
@@ -46,11 +58,47 @@ func (h *Handler) Home(c *gin.Context) {
 }
 
 func (h *Handler) Authorize(c *gin.Context) {
-	panic("Implement me")
+	login := c.DefaultQuery("login", "testlogin")
+	password := c.DefaultQuery("password", "testpassword")
+	ip := c.DefaultQuery("ip", "129.25.10.0")
+
+	res, err := h.Storage.CheckIfIPInBlackList(ip)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+	if res {
+		c.JSON(http.StatusForbidden, "Your IP is in blacklist")
+		return
+	}
+
+	res, err = h.Storage.CheckIfIPInWhiteList(ip)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+	if res {
+		c.JSON(http.StatusOK, "OK")
+		return
+	}
+
+	result := h.LeakyBucket.Add(bucket.AuthorizeInput{
+		Login:    login,
+		Password: password,
+		IP:       ip,
+	})
+
+	if !result {
+		c.JSON(http.StatusTooManyRequests, "Too many requests")
+		return
+	}
+
+	c.JSON(http.StatusOK, "OK")
 }
 
 func (h *Handler) ResetBucket(c *gin.Context) {
-	panic("Implement me")
+	h.LeakyBucket.ResetResetBucketTicker()
+	c.JSON(http.StatusNoContent, "")
 }
 
 func (h *Handler) AddToWhiteList(c *gin.Context) {

@@ -1,6 +1,14 @@
 package server
 
-import "github.com/gin-gonic/gin"
+import (
+	"context"
+	"errors"
+	"log"
+	"net/http"
+	"time"
+
+	"github.com/gin-gonic/gin"
+)
 
 type Handler interface {
 	Home(*gin.Context)
@@ -13,27 +21,53 @@ type Handler interface {
 }
 
 type Server struct {
+	httpSrv *http.Server
 	address string
+	engine  *gin.Engine
 	handler Handler
 }
 
 func NewServer(address string, handler Handler) *Server {
 	return &Server{
 		address: address,
+		engine:  gin.Default(),
 		handler: handler,
 	}
 }
 
-func (s *Server) Serve() {
-	router := gin.Default()
+func (s *Server) Serve(ctx context.Context) {
+	s.initRoutes()
 
-	router.GET("/", s.handler.Home)
-	router.POST("/authorize", s.handler.Authorize)
-	router.POST("/bucket/reset", s.handler.ResetBucket)
-	router.POST("/whitelist/add", s.handler.AddToWhiteList)
-	router.DELETE("/whitelist/remove", s.handler.RemoveFromWhiteList)
-	router.POST("/blacklist/add", s.handler.AddToBlackList)
-	router.DELETE("/blacklist/remove", s.handler.RemoveFromBlackList)
+	s.httpSrv = &http.Server{
+		Addr:    s.address,
+		Handler: s.engine,
+	}
 
-	router.Run(s.address)
+	go s.shutdownOnContextDone(ctx)
+
+	if err := s.httpSrv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+		log.Println("Could not start listener ", err)
+	}
+}
+
+func (s *Server) shutdownOnContextDone(ctx context.Context) {
+	<-ctx.Done()
+
+	log.Println("Shutdown Server ...")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	if err := s.httpSrv.Shutdown(ctx); err != nil {
+		log.Println("Server forced to shutdown: ", err)
+	}
+	cancel()
+}
+
+func (s *Server) initRoutes() {
+	s.engine.GET("/", s.handler.Home)
+	s.engine.POST("/authorize", s.handler.Authorize)
+	s.engine.POST("/bucket/reset", s.handler.ResetBucket)
+	s.engine.POST("/whitelist/add", s.handler.AddToWhiteList)
+	s.engine.DELETE("/whitelist/remove", s.handler.RemoveFromWhiteList)
+	s.engine.POST("/blacklist/add", s.handler.AddToBlackList)
+	s.engine.DELETE("/blacklist/remove", s.handler.RemoveFromBlackList)
 }
