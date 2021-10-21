@@ -31,7 +31,8 @@ func TestAddToWhiteList(t *testing.T) {
 	defer mockDB.Close()
 
 	mock.ExpectExec(fmt.Sprintf("INSERT INTO %s", WhiteListIpsTable)).
-		WithArgs(testSubnet).WillReturnResult(sqlmock.NewResult(0, 0))
+		WithArgs(testSubnet).
+		WillReturnResult(sqlmock.NewResult(0, 0))
 
 	err := mockStorage.AddToWhiteList(testSubnet)
 	require.NoError(t, err)
@@ -45,7 +46,8 @@ func TestRemoveFromWhiteList(t *testing.T) {
 	defer mockDB.Close()
 
 	mock.ExpectExec(fmt.Sprintf("DELETE FROM %s", WhiteListIpsTable)).
-		WithArgs(testSubnet).WillReturnResult(sqlmock.NewResult(0, 0))
+		WithArgs(testSubnet).
+		WillReturnResult(sqlmock.NewResult(0, 0))
 
 	err := mockStorage.RemoveFromWhiteList(testSubnet)
 	require.NoError(t, err)
@@ -59,7 +61,8 @@ func TestAddToBlackList(t *testing.T) {
 	defer mockDB.Close()
 
 	mock.ExpectExec(fmt.Sprintf("INSERT INTO %s", BlackListIpsTable)).
-		WithArgs(testSubnet).WillReturnResult(sqlmock.NewResult(0, 0))
+		WithArgs(testSubnet).
+		WillReturnResult(sqlmock.NewResult(0, 0))
 
 	err := mockStorage.AddToBlackList(testSubnet)
 	require.NoError(t, err)
@@ -73,7 +76,8 @@ func TestRemoveFromBlackList(t *testing.T) {
 	defer mockDB.Close()
 
 	mock.ExpectExec(fmt.Sprintf("DELETE FROM %s", BlackListIpsTable)).
-		WithArgs(testSubnet).WillReturnResult(sqlmock.NewResult(0, 0))
+		WithArgs(testSubnet).
+		WillReturnResult(sqlmock.NewResult(0, 0))
 
 	err := mockStorage.RemoveFromBlackList(testSubnet)
 	require.NoError(t, err)
@@ -87,7 +91,8 @@ func TestCheckIfIPInWhiteList(t *testing.T) {
 	defer mockDB.Close()
 
 	mock.ExpectExec(fmt.Sprintf("SELECT 1 FROM %s", WhiteListIpsTable)).
-		WithArgs(testSubnet).WillReturnResult(sqlmock.NewResult(1, 1))
+		WithArgs(testSubnet).
+		WillReturnResult(sqlmock.NewResult(1, 1))
 
 	res, err := mockStorage.CheckIfIPInWhiteList(testSubnet)
 	require.NoError(t, err)
@@ -102,7 +107,8 @@ func TestCheckIfIPInBlackList(t *testing.T) {
 	defer mockDB.Close()
 
 	mock.ExpectExec(fmt.Sprintf("SELECT 1 FROM %s", BlackListIpsTable)).
-		WithArgs(testSubnet).WillReturnResult(sqlmock.NewResult(1, 1))
+		WithArgs(testSubnet).
+		WillReturnResult(sqlmock.NewResult(1, 1))
 
 	res, err := mockStorage.CheckIfIPInBlackList(testSubnet)
 	require.NoError(t, err)
