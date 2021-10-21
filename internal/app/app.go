@@ -2,6 +2,8 @@ package app
 
 import (
 	"context"
+	"os/signal"
+	"syscall"
 
 	"github.com/thewolf27/anti-bruteforce/internal/config"
 	"github.com/thewolf27/anti-bruteforce/internal/handler"
@@ -15,22 +17,21 @@ type App struct {
 }
 
 func NewApp() *App {
-	config := config.NewConfig()
-
 	return &App{
-		Config: config,
+		Config: config.NewConfig(),
 	}
 }
 
 func (app *App) Run() {
-	ctx := context.Background()
+	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
+	defer cancel()
 
 	logger := logger.NewLogger(app.Config.LoggerConfig.Level)
 	storage := storage.NewStorage(app.Config.StorageConfig.Dsn)
 	storage.Connect(ctx)
 
-	handler := handler.NewHandler(storage, logger)
+	handler := handler.NewHandler(ctx, storage, logger, app.Config.AppConfig)
 
 	server := server.NewServer(app.Config.ServerConfig.Address, handler)
-	server.Serve()
+	server.Serve(ctx)
 }
