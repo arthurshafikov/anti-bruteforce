@@ -13,6 +13,7 @@ import (
 var testSubnet = "194.20.10.0/24"
 
 func newSQLStorageMock(t *testing.T) (*sql.DB, sqlmock.Sqlmock, Storage) {
+	t.Helper()
 	mockDB, mock, err := sqlmock.New()
 	require.NoError(t, err)
 
@@ -81,14 +82,14 @@ func TestRemoveFromBlackList(t *testing.T) {
 	require.NoError(t, err)
 }
 
-func TestCheckIfIpInWhiteList(t *testing.T) {
+func TestCheckIfIPInWhiteList(t *testing.T) {
 	mockDB, mock, mockStorage := newSQLStorageMock(t)
 	defer mockDB.Close()
 
 	mock.ExpectExec(fmt.Sprintf("SELECT 1 FROM %s", WhiteListIpsTable)).
 		WithArgs(testSubnet).WillReturnResult(sqlmock.NewResult(1, 1))
 
-	res, err := mockStorage.CheckIfIpInWhiteList(testSubnet)
+	res, err := mockStorage.CheckIfIPInWhiteList(testSubnet)
 	require.NoError(t, err)
 	require.True(t, res)
 
@@ -96,14 +97,14 @@ func TestCheckIfIpInWhiteList(t *testing.T) {
 	require.NoError(t, err)
 }
 
-func TestCheckIfIpInBlackList(t *testing.T) {
+func TestCheckIfIPInBlackList(t *testing.T) {
 	mockDB, mock, mockStorage := newSQLStorageMock(t)
 	defer mockDB.Close()
 
 	mock.ExpectExec(fmt.Sprintf("SELECT 1 FROM %s", BlackListIpsTable)).
 		WithArgs(testSubnet).WillReturnResult(sqlmock.NewResult(1, 1))
 
-	res, err := mockStorage.CheckIfIpInBlackList(testSubnet)
+	res, err := mockStorage.CheckIfIPInBlackList(testSubnet)
 	require.NoError(t, err)
 	require.True(t, res)
 

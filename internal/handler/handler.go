@@ -7,7 +7,10 @@ import (
 )
 
 const (
-	QuerySubnetParam        = "subnet"
+	// Subnet request parameter key
+	QuerySubnetParam = "subnet"
+
+	// Request wrong subnet format error
 	WrongSubnetErrorMessage = "wrong subnet format"
 )
 
@@ -16,8 +19,8 @@ type Storage interface {
 	AddToBlackList(string) error
 	RemoveFromWhiteList(string) error
 	RemoveFromBlackList(string) error
-	CheckIfIpInWhiteList(string) (bool, error)
-	CheckIfIpInBlackList(string) (bool, error)
+	CheckIfIPInWhiteList(string) (bool, error)
+	CheckIfIPInBlackList(string) (bool, error)
 }
 
 type Logger interface {
