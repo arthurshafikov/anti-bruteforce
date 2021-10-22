@@ -1,12 +1,11 @@
 package handler
 
 import (
-	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/thewolf27/anti-bruteforce/internal/bucket"
-	"github.com/thewolf27/anti-bruteforce/internal/config"
 )
 
 const (
@@ -17,39 +16,22 @@ const (
 	WrongSubnetErrorMessage = "wrong subnet format"
 )
 
-type Storage interface {
+type App interface {
+	Authorize(bucket.AuthorizeInput) bool
+	ResetBucket()
 	AddToWhiteList(string) error
 	AddToBlackList(string) error
 	RemoveFromWhiteList(string) error
 	RemoveFromBlackList(string) error
-	CheckIfIPInWhiteList(string) (bool, error)
-	CheckIfIPInBlackList(string) (bool, error)
-}
-
-type Logger interface {
-	Warn(string)
-	Info(string)
-	Error(string)
 }
 
 type Handler struct {
-	Storage     Storage
-	Logger      Logger
-	LeakyBucket *bucket.LeakyBucket
+	App App
 }
 
-func NewHandler(ctx context.Context, storage Storage, logger Logger, appConfig config.AppConfig) *Handler {
-	leakyBucket := bucket.NewLeakyBucket(ctx, bucket.AuthorizeLimits{
-		LimitAttemptsForLogin:    appConfig.NumberOfAttemptsForLogin,
-		LimitAttemptsForPassword: appConfig.NumberOfAttemptsForPassword,
-		LimitAttemptsForIP:       appConfig.NumberOfAttemptsForIP,
-	})
-	go leakyBucket.Leak()
-
+func NewHandler(app App) *Handler {
 	return &Handler{
-		Storage:     storage,
-		Logger:      logger,
-		LeakyBucket: leakyBucket,
+		App: app,
 	}
 }
 
@@ -62,51 +44,31 @@ func (h *Handler) Authorize(c *gin.Context) {
 	password := c.DefaultQuery("password", "testpassword")
 	ip := c.DefaultQuery("ip", "129.25.10.0")
 
-	res, err := h.Storage.CheckIfIPInBlackList(ip)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, err.Error())
-		return
-	}
-	if res {
-		c.JSON(http.StatusForbidden, "Your IP is in blacklist")
-		return
-	}
-
-	res, err = h.Storage.CheckIfIPInWhiteList(ip)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, err.Error())
-		return
-	}
-	if res {
-		c.JSON(http.StatusOK, "OK")
-		return
-	}
-
-	result := h.LeakyBucket.Add(bucket.AuthorizeInput{
+	res := h.App.Authorize(bucket.AuthorizeInput{
 		Login:    login,
 		Password: password,
 		IP:       ip,
 	})
 
-	if !result {
-		c.JSON(http.StatusTooManyRequests, "Too many requests")
+	if res {
+		c.JSON(http.StatusOK, "OK")
 		return
 	}
 
-	c.JSON(http.StatusOK, "OK")
+	c.JSON(http.StatusTooManyRequests, "Too many requests")
 }
 
 func (h *Handler) ResetBucket(c *gin.Context) {
-	h.LeakyBucket.ResetResetBucketTicker()
+	h.App.ResetBucket()
 	c.JSON(http.StatusNoContent, "")
 }
 
 func (h *Handler) AddToWhiteList(c *gin.Context) {
 	subnet := c.Query(QuerySubnetParam)
 
-	err := h.Storage.AddToWhiteList(subnet)
+	err := h.App.AddToWhiteList(subnet)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, WrongSubnetErrorMessage)
+		h.setWrongSubnetErrorMessageResponse(c, err)
 		return
 	}
 
@@ -116,9 +78,9 @@ func (h *Handler) AddToWhiteList(c *gin.Context) {
 func (h *Handler) AddToBlackList(c *gin.Context) {
 	subnet := c.Query(QuerySubnetParam)
 
-	err := h.Storage.AddToBlackList(subnet)
+	err := h.App.AddToBlackList(subnet)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, WrongSubnetErrorMessage)
+		h.setWrongSubnetErrorMessageResponse(c, err)
 		return
 	}
 
@@ -128,9 +90,9 @@ func (h *Handler) AddToBlackList(c *gin.Context) {
 func (h *Handler) RemoveFromWhiteList(c *gin.Context) {
 	subnet := c.Query(QuerySubnetParam)
 
-	err := h.Storage.RemoveFromWhiteList(subnet)
+	err := h.App.RemoveFromWhiteList(subnet)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, WrongSubnetErrorMessage)
+		h.setWrongSubnetErrorMessageResponse(c, err)
 		return
 	}
 
@@ -140,11 +102,15 @@ func (h *Handler) RemoveFromWhiteList(c *gin.Context) {
 func (h *Handler) RemoveFromBlackList(c *gin.Context) {
 	subnet := c.Query(QuerySubnetParam)
 
-	err := h.Storage.RemoveFromBlackList(subnet)
+	err := h.App.RemoveFromBlackList(subnet)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, WrongSubnetErrorMessage)
+		h.setWrongSubnetErrorMessageResponse(c, err)
 		return
 	}
 
 	c.JSON(http.StatusOK, "")
+}
+
+func (h *Handler) setWrongSubnetErrorMessageResponse(c *gin.Context, err error) {
+	c.JSON(http.StatusInternalServerError, fmt.Errorf("%s %w", WrongSubnetErrorMessage, err).Error())
 }
