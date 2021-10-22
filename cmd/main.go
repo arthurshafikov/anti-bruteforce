@@ -1,7 +1,9 @@
 package main
 
-import "github.com/thewolf27/anti-bruteforce/internal/app"
+import (
+	"github.com/thewolf27/anti-bruteforce/internal/launcher"
+)
 
 func main() {
-	app.NewApp().Run()
+	launcher.Run()
 }
