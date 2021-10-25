@@ -3,7 +3,7 @@ FROM alpine:3.9
 ENV GOOSE_FILE /bin/goose
 ENV MIGRATIONS /migrations
 
-ADD https://github.com/pressly/goose/releases/download/v2.6.0/goose-linux64 ${GOOSE_FILE}
+ADD https://github.com/pressly/goose/releases/download/v3.3.0/goose_linux_x86_64 ${GOOSE_FILE}
 RUN chmod +x ${GOOSE_FILE}
 
 WORKDIR ${MIGRATIONS}
