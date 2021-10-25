@@ -6,9 +6,10 @@ import (
 	"syscall"
 
 	"github.com/thewolf27/anti-bruteforce/internal/app"
+	"github.com/thewolf27/anti-bruteforce/internal/bucket"
 	"github.com/thewolf27/anti-bruteforce/internal/config"
-	"github.com/thewolf27/anti-bruteforce/internal/handler"
-	"github.com/thewolf27/anti-bruteforce/internal/server"
+	"github.com/thewolf27/anti-bruteforce/internal/models"
+	"github.com/thewolf27/anti-bruteforce/internal/server/http"
 	"github.com/thewolf27/anti-bruteforce/internal/storage"
 	"github.com/thewolf27/anti-bruteforce/pkg/logger"
 )
@@ -22,9 +23,15 @@ func Run() {
 	storage := storage.NewStorage(config.StorageConfig.Dsn)
 	storage.Connect(ctx)
 
-	app := app.NewApp(ctx, config, logger, storage)
-	handler := handler.NewHandler(app)
+	bucket := bucket.NewLeakyBucket(ctx, models.AuthorizeLimits{
+		LimitAttemptsForLogin:    config.NumberOfAttemptsForLogin,
+		LimitAttemptsForPassword: config.NumberOfAttemptsForPassword,
+		LimitAttemptsForIP:       config.NumberOfAttemptsForIP,
+	})
 
-	server := server.NewServer(app.Config.ServerConfig.Address, handler)
+	app := app.NewApp(ctx, logger, storage, bucket)
+	handler := http.NewHandler(app)
+
+	server := http.NewServer(config.ServerConfig.Address, handler)
 	server.Serve(ctx)
 }
