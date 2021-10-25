@@ -3,8 +3,7 @@ package app
 import (
 	"context"
 
-	"github.com/thewolf27/anti-bruteforce/internal/bucket"
-	"github.com/thewolf27/anti-bruteforce/internal/config"
+	"github.com/thewolf27/anti-bruteforce/internal/models"
 )
 
 type Storage interface {
@@ -22,30 +21,29 @@ type Logger interface {
 	Error(string)
 }
 
-type App struct {
-	Config      *config.Config
-	Logger      Logger
-	Storage     Storage
-	LeakyBucket *bucket.LeakyBucket
+type LeakyBucket interface {
+	Add(models.AuthorizeInput) bool
+	Leak()
+	ResetResetBucketTicker()
 }
 
-func NewApp(ctx context.Context, config *config.Config, logger Logger, storage Storage) *App {
-	leakyBucket := bucket.NewLeakyBucket(ctx, bucket.AuthorizeLimits{
-		LimitAttemptsForLogin:    config.AppConfig.NumberOfAttemptsForLogin,
-		LimitAttemptsForPassword: config.AppConfig.NumberOfAttemptsForPassword,
-		LimitAttemptsForIP:       config.AppConfig.NumberOfAttemptsForIP,
-	})
-	go leakyBucket.Leak()
+type App struct {
+	Logger      Logger
+	Storage     Storage
+	LeakyBucket LeakyBucket
+}
+
+func NewApp(ctx context.Context, logger Logger, storage Storage, bucket LeakyBucket) *App {
+	go bucket.Leak()
 
 	return &App{
-		Config:      config,
 		Logger:      logger,
 		Storage:     storage,
-		LeakyBucket: leakyBucket,
+		LeakyBucket: bucket,
 	}
 }
 
-func (app *App) Authorize(input bucket.AuthorizeInput) bool {
+func (app *App) Authorize(input models.AuthorizeInput) bool {
 	res, err := app.Storage.CheckIfIPInBlackList(input.IP)
 	if err != nil {
 		app.Logger.Error(err.Error())
@@ -71,8 +69,8 @@ func (app *App) ResetBucket() {
 	app.LeakyBucket.ResetResetBucketTicker()
 }
 
-func (app *App) AddToWhiteList(subnet string) error {
-	err := app.Storage.AddToWhiteList(subnet)
+func (app *App) AddToWhiteList(subnetInput models.SubnetInput) error {
+	err := app.Storage.AddToWhiteList(subnetInput.Subnet)
 	if err != nil {
 		return err
 	}
@@ -80,8 +78,8 @@ func (app *App) AddToWhiteList(subnet string) error {
 	return nil
 }
 
-func (app *App) AddToBlackList(subnet string) error {
-	err := app.Storage.AddToBlackList(subnet)
+func (app *App) AddToBlackList(subnetInput models.SubnetInput) error {
+	err := app.Storage.AddToBlackList(subnetInput.Subnet)
 	if err != nil {
 		return err
 	}
@@ -89,8 +87,8 @@ func (app *App) AddToBlackList(subnet string) error {
 	return nil
 }
 
-func (app *App) RemoveFromWhiteList(subnet string) error {
-	err := app.Storage.RemoveFromWhiteList(subnet)
+func (app *App) RemoveFromWhiteList(subnetInput models.SubnetInput) error {
+	err := app.Storage.RemoveFromWhiteList(subnetInput.Subnet)
 	if err != nil {
 		return err
 	}
@@ -98,25 +96,11 @@ func (app *App) RemoveFromWhiteList(subnet string) error {
 	return nil
 }
 
-func (app *App) RemoveFromBlackList(subnet string) error {
-	err := app.Storage.RemoveFromBlackList(subnet)
+func (app *App) RemoveFromBlackList(subnetInput models.SubnetInput) error {
+	err := app.Storage.RemoveFromBlackList(subnetInput.Subnet)
 	if err != nil {
 		return err
 	}
 
 	return nil
 }
-
-// func (app *App) Run() {
-// 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
-// 	defer cancel()
-
-// 	logger := logger.NewLogger(app.Config.LoggerConfig.Level)
-// 	storage := storage.NewStorage(app.Config.StorageConfig.Dsn)
-// 	storage.Connect(ctx)
-
-// 	handler := handler.NewHandler(ctx, storage, logger, app.Config.AppConfig)
-
-// 	server := server.NewServer(app.Config.ServerConfig.Address, handler)
-// 	server.Serve(ctx)
-// }
