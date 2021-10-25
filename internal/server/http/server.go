@@ -1,4 +1,4 @@
-package server
+package http
 
 import (
 	"context"
@@ -10,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type Handler interface {
+type ServerHandler interface {
 	Home(*gin.Context)
 	Authorize(*gin.Context)
 	ResetBucket(*gin.Context)
@@ -24,10 +24,10 @@ type Server struct {
 	httpSrv *http.Server
 	address string
 	engine  *gin.Engine
-	handler Handler
+	handler ServerHandler
 }
 
-func NewServer(address string, handler Handler) *Server {
+func NewServer(address string, handler ServerHandler) *Server {
 	return &Server{
 		address: address,
 		engine:  gin.Default(),
