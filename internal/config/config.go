@@ -16,9 +16,9 @@ type Config struct {
 }
 
 type AppConfig struct {
-	NumberOfAttemptsForLogin    int
-	NumberOfAttemptsForPassword int
-	NumberOfAttemptsForIP       int
+	NumberOfAttemptsForLogin    int64
+	NumberOfAttemptsForPassword int64
+	NumberOfAttemptsForIP       int64
 }
 
 type LoggerConfig struct {

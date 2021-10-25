@@ -3,88 +3,117 @@ package bucket
 import (
 	"context"
 	"log"
+	"sync"
 	"time"
+
+	"github.com/thewolf27/anti-bruteforce/internal/models"
 )
 
 const (
 	resetBucketInterval = time.Second * 60
+	loginBucketKey      = "login"
+	passwordBucketKey   = "password"
+	ipBucketKey         = "ip"
 )
 
-type AuthorizeInput struct {
-	Login, IP, Password string
+type bucketValuesMap map[string]int64
+
+type bucket struct {
+	mu        *sync.Mutex
+	limit     int64
+	ValuesMap bucketValuesMap
 }
 
-type AuthorizeLimits struct {
-	LimitAttemptsForLogin, LimitAttemptsForPassword, LimitAttemptsForIP int
-}
-
-type bucketMap map[string]int
+type bucketsMap map[string]bucket
 
 type LeakyBucket struct {
-	ctx               context.Context
-	loginBucket       bucketMap
-	loginLimit        int
-	ipBucket          bucketMap
-	ipLimit           int
-	passwordBucket    bucketMap
-	passwordLimit     int
-	resetBucketTicker *time.Ticker
+	ctx                context.Context
+	buckets            bucketsMap
+	resetBucketsTicker *time.Ticker
 }
 
-func NewLeakyBucket(ctx context.Context, authLimits AuthorizeLimits) *LeakyBucket {
-	resetBucketTicker := time.NewTicker(resetBucketInterval)
+func NewLeakyBucket(ctx context.Context, authLimits models.AuthorizeLimits) *LeakyBucket {
+	resetBucketsTicker := time.NewTicker(resetBucketInterval)
 	go func() {
 		<-ctx.Done()
 		log.Println("Ticker stops")
-		resetBucketTicker.Stop()
+		resetBucketsTicker.Stop()
 	}()
 
-	lb := &LeakyBucket{
-		ctx:               ctx,
-		loginBucket:       make(bucketMap),
-		loginLimit:        authLimits.LimitAttemptsForLogin,
-		passwordBucket:    make(bucketMap),
-		passwordLimit:     authLimits.LimitAttemptsForPassword,
-		ipBucket:          make(bucketMap),
-		ipLimit:           authLimits.LimitAttemptsForIP,
-		resetBucketTicker: resetBucketTicker,
+	buckets := bucketsMap{
+		loginBucketKey: bucket{
+			mu:        &sync.Mutex{},
+			limit:     authLimits.LimitAttemptsForLogin,
+			ValuesMap: make(bucketValuesMap),
+		},
+		passwordBucketKey: bucket{
+			mu:        &sync.Mutex{},
+			limit:     authLimits.LimitAttemptsForPassword,
+			ValuesMap: make(bucketValuesMap),
+		},
+		ipBucketKey: bucket{
+			mu:        &sync.Mutex{},
+			limit:     authLimits.LimitAttemptsForIP,
+			ValuesMap: make(bucketValuesMap),
+		},
 	}
 
-	return lb
+	return &LeakyBucket{
+		ctx:                ctx,
+		buckets:            buckets,
+		resetBucketsTicker: resetBucketsTicker,
+	}
 }
 
-func (lb *LeakyBucket) Add(input AuthorizeInput) bool {
+func (lb *LeakyBucket) Add(input models.AuthorizeInput) bool {
 	return lb.addLogin(input.Login) && lb.addIP(input.IP) && lb.addPassword(input.Password)
 }
 
 func (lb *LeakyBucket) addLogin(login string) bool {
-	lb.loginBucket[login]++
-	return lb.loginBucket[login] <= lb.loginLimit
+	return lb.addInBucket(loginBucketKey, login)
 }
 
 func (lb *LeakyBucket) addIP(ip string) bool {
-	lb.ipBucket[ip]++
-	return lb.ipBucket[ip] <= lb.ipLimit
+	return lb.addInBucket(ipBucketKey, ip)
 }
 
 func (lb *LeakyBucket) addPassword(password string) bool {
-	lb.passwordBucket[password]++
-	return lb.passwordBucket[password] <= lb.passwordLimit
+	return lb.addInBucket(passwordBucketKey, password)
+}
+
+func (lb *LeakyBucket) addInBucket(bucketName, value string) bool {
+	bucket, ok := lb.buckets[bucketName]
+	if !ok {
+		return false
+	}
+
+	lb.buckets[bucketName].mu.Lock()
+	defer lb.buckets[bucketName].mu.Unlock()
+	if bucket.ValuesMap[value] >= bucket.limit {
+		return false
+	}
+
+	lb.buckets[bucketName].ValuesMap[value]++
+	return true
 }
 
 func (lb *LeakyBucket) ResetResetBucketTicker() {
-	lb.resetBucketTicker.Reset(resetBucketInterval)
+	lb.resetBucketsTicker.Reset(resetBucketInterval)
 	lb.resetBucket()
 }
 
 func (lb *LeakyBucket) resetBucket() {
-	lb.loginBucket = make(bucketMap)
-	lb.ipBucket = make(bucketMap)
-	lb.passwordBucket = make(bucketMap)
+	for _, bucketName := range []string{loginBucketKey, passwordBucketKey, ipBucketKey} {
+		if bucket, ok := lb.buckets[bucketName]; ok {
+			bucket.ValuesMap = make(bucketValuesMap)
+
+			lb.buckets[bucketName] = bucket
+		}
+	}
 }
 
 func (lb *LeakyBucket) Leak() {
-	for range lb.resetBucketTicker.C {
+	for range lb.resetBucketsTicker.C {
 		select {
 		case <-lb.ctx.Done():
 			return
