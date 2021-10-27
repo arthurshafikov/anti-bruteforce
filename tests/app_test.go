@@ -31,12 +31,12 @@ func TestAppSuite(t *testing.T) {
 
 func (h *appSuiteHandler) TestTryToAuthorizeWithResetBucket() {
 	for i := 0; i < limitAttemptsForLogin; i++ {
-		statusCode, body := h.tryToAuthorize(authoruzeInput)
+		statusCode, body := h.tryToAuthorize(authorizeInput)
 		require.Equal(h.T(), http.StatusOK, statusCode)
 		require.Equal(h.T(), successResponse, body)
 	}
 
-	statusCode, body := h.tryToAuthorize(authoruzeInput)
+	statusCode, body := h.tryToAuthorize(authorizeInput)
 	require.Equal(h.T(), http.StatusTooManyRequests, statusCode)
 	require.Equal(h.T(), tooManyRequestsResponse, body)
 
@@ -46,14 +46,14 @@ func (h *appSuiteHandler) TestTryToAuthorizeWithResetBucket() {
 	require.Equal(h.T(), successResponse, body)
 
 	for i := 0; i < limitAttemptsForLogin; i++ {
-		statusCode, body := h.tryToAuthorize(authoruzeInput)
+		statusCode, body := h.tryToAuthorize(authorizeInput)
 		require.Equal(h.T(), http.StatusOK, statusCode)
 		require.Equal(h.T(), successResponse, body)
 	}
 }
 
 func (h *appSuiteHandler) TestAddToWhiteListAndTryToAuthorizeMoreThanLimit() {
-	subnet := getJsonBody(h.T(), subnetInput)
+	subnet := getJSONBody(h.T(), subnetInput)
 
 	recorder := h.makeServerHTTPRequest(http.MethodPost, "/whitelist/add", bytes.NewBuffer(subnet))
 	statusCode, body := h.getStatusCodeAndBodyFromRecorder(recorder)
@@ -61,27 +61,27 @@ func (h *appSuiteHandler) TestAddToWhiteListAndTryToAuthorizeMoreThanLimit() {
 	require.Equal(h.T(), successResponse, body)
 
 	for i := 0; i < (limitAttemptsForLogin * 2); i++ {
-		statusCode, body := h.tryToAuthorize(authoruzeInput)
+		statusCode, body := h.tryToAuthorize(authorizeInput)
 		require.Equal(h.T(), http.StatusOK, statusCode)
 		require.Equal(h.T(), successResponse, body)
 	}
 }
 
 func (h *appSuiteHandler) TestAddToBlackListAndTryToAuthorize() {
-	subnet := getJsonBody(h.T(), subnetInput)
+	subnet := getJSONBody(h.T(), subnetInput)
 
 	recorder := h.makeServerHTTPRequest(http.MethodPost, "/blacklist/add", bytes.NewBuffer(subnet))
 	statusCode, body := h.getStatusCodeAndBodyFromRecorder(recorder)
 	require.Equal(h.T(), http.StatusCreated, statusCode)
 	require.Equal(h.T(), successResponse, body)
 
-	statusCode, body = h.tryToAuthorize(authoruzeInput)
+	statusCode, body = h.tryToAuthorize(authorizeInput)
 	require.Equal(h.T(), http.StatusTooManyRequests, statusCode)
 	require.Equal(h.T(), tooManyRequestsResponse, body)
 }
 
 func (h *appSuiteHandler) TestAddToBlackListWrongSubnetFormat() {
-	subnet := getJsonBody(h.T(), models.SubnetInput{
+	subnet := getJSONBody(h.T(), models.SubnetInput{
 		Subnet: "asfasfafs",
 	})
 
@@ -92,14 +92,14 @@ func (h *appSuiteHandler) TestAddToBlackListWrongSubnetFormat() {
 }
 
 func (h *appSuiteHandler) TestManyIPsTryingToAuthorize() {
-	subnet := getJsonBody(h.T(), subnetInput)
+	subnet := getJSONBody(h.T(), subnetInput)
 	recorder := h.makeServerHTTPRequest(http.MethodPost, "/whitelist/add", bytes.NewBuffer(subnet))
 	statusCode, body := h.getStatusCodeAndBodyFromRecorder(recorder)
 	require.Equal(h.T(), http.StatusCreated, statusCode)
 	require.Equal(h.T(), successResponse, body)
 
 	subnetInput.Subnet = "128.10/16"
-	subnet = getJsonBody(h.T(), subnetInput)
+	subnet = getJSONBody(h.T(), subnetInput)
 	recorder = h.makeServerHTTPRequest(http.MethodPost, "/blacklist/add", bytes.NewBuffer(subnet))
 	statusCode, body = h.getStatusCodeAndBodyFromRecorder(recorder)
 	require.Equal(h.T(), http.StatusCreated, statusCode)
@@ -116,8 +116,8 @@ func (h *appSuiteHandler) TestManyIPsTryingToAuthorize() {
 	}
 
 	for ip, shouldAuthorize := range IPMapWithExpectedAuthorizeOutput {
-		authoruzeInput.IP = ip
-		statusCode, body := h.tryToAuthorize(authoruzeInput)
+		authorizeInput.IP = ip
+		statusCode, body := h.tryToAuthorize(authorizeInput)
 
 		if shouldAuthorize {
 			require.Equal(h.T(), http.StatusOK, statusCode)
@@ -129,8 +129,22 @@ func (h *appSuiteHandler) TestManyIPsTryingToAuthorize() {
 	}
 }
 
+func (h *appSuiteHandler) TestAddAndRemoveFromWhiteList() {
+	subnet := getJSONBody(h.T(), subnetInput)
+
+	recorder := h.makeServerHTTPRequest(http.MethodPost, "/blacklist/add", bytes.NewBuffer(subnet))
+	statusCode, body := h.getStatusCodeAndBodyFromRecorder(recorder)
+	require.Equal(h.T(), http.StatusCreated, statusCode)
+	require.Equal(h.T(), successResponse, body)
+
+	recorder = h.makeServerHTTPRequest(http.MethodDelete, "/blacklist/remove", bytes.NewBuffer(subnet))
+	statusCode, body = h.getStatusCodeAndBodyFromRecorder(recorder)
+	require.Equal(h.T(), http.StatusOK, statusCode)
+	require.Equal(h.T(), successResponse, body)
+}
+
 func (h *appSuiteHandler) tryToAuthorize(authorizeInput models.AuthorizeInput) (int, string) {
-	recorder := h.makeServerHTTPRequest(http.MethodPost, "/authorize", bytes.NewBuffer(getJsonBody(h.T(), authoruzeInput)))
+	recorder := h.makeServerHTTPRequest(http.MethodPost, "/authorize", bytes.NewBuffer(getJSONBody(h.T(), authorizeInput)))
 
 	return h.getStatusCodeAndBodyFromRecorder(recorder)
 }
@@ -140,6 +154,8 @@ func (h *appSuiteHandler) makeServerHTTPRequest(method, route string, body io.Re
 	recorder := httptest.NewRecorder()
 	h.ServerEngine.ServeHTTP(recorder, req)
 
+	req.Body.Close()
+
 	return recorder
 }
 
@@ -147,6 +163,8 @@ func (h *appSuiteHandler) getStatusCodeAndBodyFromRecorder(recorder *httptest.Re
 	recorderResult := recorder.Result()
 	bodyBytes, err := ioutil.ReadAll(recorderResult.Body)
 	require.NoError(h.T(), err)
+
+	recorderResult.Body.Close()
 
 	return recorderResult.StatusCode, string(bodyBytes)
 }

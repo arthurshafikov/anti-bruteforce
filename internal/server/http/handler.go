@@ -82,7 +82,7 @@ func (h *Handler) AddToWhiteList(c *gin.Context) {
 
 	err = h.App.AddToWhiteList(subnetInput)
 	if err != nil {
-		h.setWrongSubnetErrorMessageResponse(c, err)
+		h.setWrongSubnetErrorMessageResponse(c)
 		return
 	}
 
@@ -97,7 +97,7 @@ func (h *Handler) AddToBlackList(c *gin.Context) {
 
 	err = h.App.AddToBlackList(subnetInput)
 	if err != nil {
-		h.setWrongSubnetErrorMessageResponse(c, err)
+		h.setWrongSubnetErrorMessageResponse(c)
 		return
 	}
 
@@ -112,7 +112,7 @@ func (h *Handler) RemoveFromWhiteList(c *gin.Context) {
 
 	err = h.App.RemoveFromWhiteList(subnetInput)
 	if err != nil {
-		h.setWrongSubnetErrorMessageResponse(c, err)
+		h.setWrongSubnetErrorMessageResponse(c)
 		return
 	}
 
@@ -127,7 +127,7 @@ func (h *Handler) RemoveFromBlackList(c *gin.Context) {
 
 	err = h.App.RemoveFromBlackList(subnetInput)
 	if err != nil {
-		h.setWrongSubnetErrorMessageResponse(c, err)
+		h.setWrongSubnetErrorMessageResponse(c)
 		return
 	}
 
@@ -138,14 +138,14 @@ func (h *Handler) getSubnetInput(c *gin.Context) (models.SubnetInput, error) {
 	var subnetInput models.SubnetInput
 	err := c.ShouldBindJSON(&subnetInput)
 	if err != nil {
-		h.setWrongSubnetErrorMessageResponse(c, err)
+		h.setWrongSubnetErrorMessageResponse(c)
 		return models.SubnetInput{}, err
 	}
 
 	return subnetInput, nil
 }
 
-func (h *Handler) setWrongSubnetErrorMessageResponse(c *gin.Context, err error) {
+func (h *Handler) setWrongSubnetErrorMessageResponse(c *gin.Context) {
 	c.JSON(http.StatusUnprocessableEntity, ServerResponse{
 		Data: WrongSubnetErrorMessage,
 	})
