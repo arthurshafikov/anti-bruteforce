@@ -9,6 +9,7 @@ import (
 	"github.com/thewolf27/anti-bruteforce/internal/bucket"
 	"github.com/thewolf27/anti-bruteforce/internal/config"
 	"github.com/thewolf27/anti-bruteforce/internal/models"
+	grcpapi "github.com/thewolf27/anti-bruteforce/internal/server/grpc/api"
 	"github.com/thewolf27/anti-bruteforce/internal/server/http"
 	"github.com/thewolf27/anti-bruteforce/internal/storage"
 	"github.com/thewolf27/anti-bruteforce/pkg/logger"
@@ -30,6 +31,9 @@ func Run() {
 	})
 
 	app := app.NewApp(ctx, logger, storage, bucket)
+
+	go grcpapi.RunGrpcServer(ctx, config.GrpcServerConfig.Address, app)
+
 	handler := http.NewHandler(app)
 
 	server := http.NewServer(config.ServerConfig.Address, handler)

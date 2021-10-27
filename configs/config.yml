@@ -6,3 +6,5 @@ LoggerConfig:
   Level: "DEBUG"
 ServerConfig:
   Address: ":8123"
+GrpcServerConfig:
+  Address: ":8765"
