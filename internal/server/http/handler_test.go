@@ -25,7 +25,7 @@ func TestAuthorize(t *testing.T) {
 
 	t.Run("with json body", func(t *testing.T) {
 		w, c, h := getWriterContextAndHandler()
-		jsonBody := getAuthorizeJsonBody(t)
+		jsonBody := getAuthorizeJSONBody(t)
 		c.Request = httptest.NewRequest(http.MethodPost, "/authorize", bytes.NewBuffer(jsonBody))
 
 		h.Authorize(c)
@@ -137,6 +137,7 @@ func getWriterContextAndHandler() (*httptest.ResponseRecorder, *gin.Context, *Ha
 }
 
 func getSubnetJSONBody(t *testing.T) []byte {
+	t.Helper()
 	jsonBody, err := json.Marshal(models.SubnetInput{
 		Subnet: "198.24.15.0/24",
 	})
@@ -145,7 +146,8 @@ func getSubnetJSONBody(t *testing.T) []byte {
 	return jsonBody
 }
 
-func getAuthorizeJsonBody(t *testing.T) []byte {
+func getAuthorizeJSONBody(t *testing.T) []byte {
+	t.Helper()
 	jsonBody, err := json.Marshal(models.AuthorizeInput{
 		Login:    "testlogin",
 		Password: "testpass",

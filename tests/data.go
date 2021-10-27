@@ -33,6 +33,7 @@ var (
 )
 
 func getJSONBody(t *testing.T, v interface{}) []byte {
+	t.Helper()
 	jsonBody, err := json.Marshal(v)
 	require.NoError(t, err)
 

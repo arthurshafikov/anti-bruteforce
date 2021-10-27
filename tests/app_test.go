@@ -164,5 +164,7 @@ func (h *appSuiteHandler) getStatusCodeAndBodyFromRecorder(recorder *httptest.Re
 	bodyBytes, err := ioutil.ReadAll(recorderResult.Body)
 	require.NoError(h.T(), err)
 
+	recorderResult.Body.Close()
+
 	return recorderResult.StatusCode, string(bodyBytes)
 }
