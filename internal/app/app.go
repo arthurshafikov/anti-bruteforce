@@ -13,6 +13,7 @@ type Storage interface {
 	RemoveFromBlackList(string) error
 	CheckIfIPInWhiteList(string) (bool, error)
 	CheckIfIPInBlackList(string) (bool, error)
+	ResetDatabase() error
 }
 
 type Logger interface {
