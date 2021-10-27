@@ -1,0 +1,30 @@
+version: '3'
+
+networks:
+  integration-tests:
+    driver: bridge
+
+services:
+  integration-tests:
+    build:
+      context: ./
+      dockerfile: ./build/tests/Dockerfile
+    container_name: integration-tests
+    environment:
+      WAIT_HOSTS: test-db:5432
+      WAIT_AFTER: 2
+      DSN: ${TESTS_DSN}
+    depends_on: 
+      - test-db
+    networks:
+      - integration-tests
+  test-db:
+    image: postgres
+    container_name: test-ab-postgres
+    restart: on-failure
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    networks:
+      - integration-tests

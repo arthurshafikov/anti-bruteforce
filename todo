@@ -1,12 +1,6 @@
 todo:
-1. Дописать ещё тестов
-4. интеграционные тесты
-5. command line interface (cobra?)
-6. 
+
+5. command line interface (cobra?) thru grpc
+// https://carlosbecker.com/posts/docker-go-mod/
 
 https://stackoverflow.com/questions/3042437/how-to-change-the-commit-author-for-one-specific-commit
-
-select * from whitelist_ips where subnet <<= inet '198.24.10.255/24'; 1
-select * from whitelist_ips where subnet <<= inet '198.24.100.255/24'; 0 
-
-select 1 from whitelist_ips where subnet >> '198.24.10.22';
