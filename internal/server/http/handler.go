@@ -1,7 +1,6 @@
 package http
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -20,6 +19,9 @@ const (
 
 	// WrongAuthorizeInputErrorMessage is a request login, password or ip missing format error.
 	WrongAuthorizeInputErrorMessage = "login, password and ip field are required"
+
+	// TooManyRequestsErrorMessage is a 429 text error.
+	TooManyRequestsErrorMessage = "too many requests"
 )
 
 type ServerResponse struct {
@@ -64,12 +66,12 @@ func (h *Handler) Authorize(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusTooManyRequests, "Too many requests")
+	c.JSON(http.StatusTooManyRequests, ServerResponse{TooManyRequestsErrorMessage})
 }
 
 func (h *Handler) ResetBucket(c *gin.Context) {
 	h.App.ResetBucket()
-	c.JSON(http.StatusNoContent, ServerResponse{OkResponseMessage})
+	c.JSON(http.StatusOK, ServerResponse{OkResponseMessage})
 }
 
 func (h *Handler) AddToWhiteList(c *gin.Context) {
@@ -145,6 +147,6 @@ func (h *Handler) getSubnetInput(c *gin.Context) (models.SubnetInput, error) {
 
 func (h *Handler) setWrongSubnetErrorMessageResponse(c *gin.Context, err error) {
 	c.JSON(http.StatusUnprocessableEntity, ServerResponse{
-		fmt.Errorf("%s %w", WrongSubnetErrorMessage, err).Error(),
+		Data: WrongSubnetErrorMessage,
 	})
 }
