@@ -30,7 +30,10 @@ func (a *AppService) ResetBucket(ctx context.Context, req *generated.EmptyReques
 	return successResponse, nil
 }
 
-func (a *AppService) AddToWhiteList(ctx context.Context, req *generated.SubnetRequest) (*generated.ServerResponse, error) {
+func (a *AppService) AddToWhiteList(
+	ctx context.Context,
+	req *generated.SubnetRequest,
+) (*generated.ServerResponse, error) {
 	err := a.App.AddToWhiteList(models.SubnetInput{
 		Subnet: req.Subnet,
 	})
@@ -41,7 +44,10 @@ func (a *AppService) AddToWhiteList(ctx context.Context, req *generated.SubnetRe
 	return successResponse, nil
 }
 
-func (a *AppService) AddToBlackList(ctx context.Context, req *generated.SubnetRequest) (*generated.ServerResponse, error) {
+func (a *AppService) AddToBlackList(
+	ctx context.Context,
+	req *generated.SubnetRequest,
+) (*generated.ServerResponse, error) {
 	err := a.App.AddToBlackList(models.SubnetInput{
 		Subnet: req.Subnet,
 	})
@@ -52,7 +58,10 @@ func (a *AppService) AddToBlackList(ctx context.Context, req *generated.SubnetRe
 	return successResponse, nil
 }
 
-func (a *AppService) RemoveFromWhiteList(ctx context.Context, req *generated.SubnetRequest) (*generated.ServerResponse, error) {
+func (a *AppService) RemoveFromWhiteList(
+	ctx context.Context,
+	req *generated.SubnetRequest,
+) (*generated.ServerResponse, error) {
 	err := a.App.RemoveFromWhiteList(models.SubnetInput{
 		Subnet: req.Subnet,
 	})
@@ -63,7 +72,10 @@ func (a *AppService) RemoveFromWhiteList(ctx context.Context, req *generated.Sub
 	return successResponse, nil
 }
 
-func (a *AppService) RemoveFromBlackList(ctx context.Context, req *generated.SubnetRequest) (*generated.ServerResponse, error) {
+func (a *AppService) RemoveFromBlackList(
+	ctx context.Context,
+	req *generated.SubnetRequest,
+) (*generated.ServerResponse, error) {
 	err := a.App.RemoveFromWhiteList(models.SubnetInput{
 		Subnet: req.Subnet,
 	})
