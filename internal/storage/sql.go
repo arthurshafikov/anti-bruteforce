@@ -3,6 +3,7 @@ package storage
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq" //nolint:gci
@@ -106,4 +107,14 @@ func (s *Storage) CheckIfIPInBlackList(ip string) (bool, error) {
 	}
 
 	return false, nil
+}
+
+func (s *Storage) ResetDatabase() error {
+	var tables = []string{
+		WhiteListIpsTable,
+		BlackListIpsTable,
+	}
+	_, err := s.db.Exec(fmt.Sprintf(`TRUNCATE TABLE %s`, strings.Join(tables, ", ")))
+
+	return err
 }
