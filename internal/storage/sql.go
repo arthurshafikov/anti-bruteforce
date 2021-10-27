@@ -110,7 +110,7 @@ func (s *Storage) CheckIfIPInBlackList(ip string) (bool, error) {
 }
 
 func (s *Storage) ResetDatabase() error {
-	var tables = []string{
+	tables := []string{
 		WhiteListIpsTable,
 		BlackListIpsTable,
 	}

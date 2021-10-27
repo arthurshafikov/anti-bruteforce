@@ -15,7 +15,7 @@ import (
 
 func TestAuthorize(t *testing.T) {
 	t.Run("without json body", func(t *testing.T) {
-		w, c, h := getWriterContextAndHandler(t)
+		w, c, h := getWriterContextAndHandler()
 		c.Request = httptest.NewRequest(http.MethodPost, "/authorize", nil)
 
 		h.Authorize(c)
@@ -24,7 +24,7 @@ func TestAuthorize(t *testing.T) {
 	})
 
 	t.Run("with json body", func(t *testing.T) {
-		w, c, h := getWriterContextAndHandler(t)
+		w, c, h := getWriterContextAndHandler()
 		jsonBody := getAuthorizeJsonBody(t)
 		c.Request = httptest.NewRequest(http.MethodPost, "/authorize", bytes.NewBuffer(jsonBody))
 
@@ -35,7 +35,7 @@ func TestAuthorize(t *testing.T) {
 }
 
 func TestResetBucket(t *testing.T) {
-	w, c, h := getWriterContextAndHandler(t)
+	w, c, h := getWriterContextAndHandler()
 	c.Request = httptest.NewRequest(http.MethodPost, "/bucket/reset", nil)
 
 	h.ResetBucket(c)
@@ -45,7 +45,7 @@ func TestResetBucket(t *testing.T) {
 
 func TestAddToWhiteList(t *testing.T) {
 	t.Run("without json body", func(t *testing.T) {
-		w, c, h := getWriterContextAndHandler(t)
+		w, c, h := getWriterContextAndHandler()
 		c.Request = httptest.NewRequest(http.MethodPost, "/whitelist/add", nil)
 
 		h.AddToWhiteList(c)
@@ -54,8 +54,8 @@ func TestAddToWhiteList(t *testing.T) {
 	})
 
 	t.Run("with json body", func(t *testing.T) {
-		w, c, h := getWriterContextAndHandler(t)
-		jsonBody := getSubnetJsonBody(t)
+		w, c, h := getWriterContextAndHandler()
+		jsonBody := getSubnetJSONBody(t)
 		c.Request = httptest.NewRequest(http.MethodPost, "/whitelist/add", bytes.NewBuffer(jsonBody))
 
 		h.AddToWhiteList(c)
@@ -66,7 +66,7 @@ func TestAddToWhiteList(t *testing.T) {
 
 func TestRemoveFromWhiteList(t *testing.T) {
 	t.Run("without json body", func(t *testing.T) {
-		w, c, h := getWriterContextAndHandler(t)
+		w, c, h := getWriterContextAndHandler()
 		c.Request = httptest.NewRequest(http.MethodDelete, "/whitelist/remove", nil)
 
 		h.RemoveFromWhiteList(c)
@@ -75,8 +75,8 @@ func TestRemoveFromWhiteList(t *testing.T) {
 	})
 
 	t.Run("with json body", func(t *testing.T) {
-		w, c, h := getWriterContextAndHandler(t)
-		jsonBody := getSubnetJsonBody(t)
+		w, c, h := getWriterContextAndHandler()
+		jsonBody := getSubnetJSONBody(t)
 		c.Request = httptest.NewRequest(http.MethodDelete, "/whitelist/remove", bytes.NewBuffer(jsonBody))
 
 		h.RemoveFromWhiteList(c)
@@ -87,7 +87,7 @@ func TestRemoveFromWhiteList(t *testing.T) {
 
 func TestAddToBlackList(t *testing.T) {
 	t.Run("without json body", func(t *testing.T) {
-		w, c, h := getWriterContextAndHandler(t)
+		w, c, h := getWriterContextAndHandler()
 		c.Request = httptest.NewRequest(http.MethodPost, "/blacklist/add", nil)
 
 		h.AddToBlackList(c)
@@ -96,8 +96,8 @@ func TestAddToBlackList(t *testing.T) {
 	})
 
 	t.Run("with json body", func(t *testing.T) {
-		w, c, h := getWriterContextAndHandler(t)
-		jsonBody := getSubnetJsonBody(t)
+		w, c, h := getWriterContextAndHandler()
+		jsonBody := getSubnetJSONBody(t)
 		c.Request = httptest.NewRequest(http.MethodPost, "/blacklist/add", bytes.NewBuffer(jsonBody))
 
 		h.AddToBlackList(c)
@@ -108,7 +108,7 @@ func TestAddToBlackList(t *testing.T) {
 
 func TestRemoveFromBlackList(t *testing.T) {
 	t.Run("without json body", func(t *testing.T) {
-		w, c, h := getWriterContextAndHandler(t)
+		w, c, h := getWriterContextAndHandler()
 		c.Request = httptest.NewRequest(http.MethodDelete, "/blacklist/remove", nil)
 
 		h.RemoveFromBlackList(c)
@@ -117,8 +117,8 @@ func TestRemoveFromBlackList(t *testing.T) {
 	})
 
 	t.Run("with json body", func(t *testing.T) {
-		w, c, h := getWriterContextAndHandler(t)
-		jsonBody := getSubnetJsonBody(t)
+		w, c, h := getWriterContextAndHandler()
+		jsonBody := getSubnetJSONBody(t)
 		c.Request = httptest.NewRequest(http.MethodDelete, "/blacklist/remove", bytes.NewBuffer(jsonBody))
 
 		h.RemoveFromBlackList(c)
@@ -127,7 +127,7 @@ func TestRemoveFromBlackList(t *testing.T) {
 	})
 }
 
-func getWriterContextAndHandler(t *testing.T) (*httptest.ResponseRecorder, *gin.Context, *Handler) {
+func getWriterContextAndHandler() (*httptest.ResponseRecorder, *gin.Context, *Handler) {
 	gin.SetMode(gin.TestMode)
 	h := NewHandler(&mocks.App{})
 	w := httptest.NewRecorder()
@@ -136,7 +136,7 @@ func getWriterContextAndHandler(t *testing.T) (*httptest.ResponseRecorder, *gin.
 	return w, c, h
 }
 
-func getSubnetJsonBody(t *testing.T) []byte {
+func getSubnetJSONBody(t *testing.T) []byte {
 	jsonBody, err := json.Marshal(models.SubnetInput{
 		Subnet: "198.24.15.0/24",
 	})

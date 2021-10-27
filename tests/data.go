@@ -21,7 +21,7 @@ var (
 	testPassword = "testPass"
 	testSubnet   = "198.24.15.0/24"
 
-	authoruzeInput = models.AuthorizeInput{
+	authorizeInput = models.AuthorizeInput{
 		Login:    testLogin,
 		Password: testPassword,
 		IP:       testSubnet,
@@ -32,7 +32,7 @@ var (
 	}
 )
 
-func getJsonBody(t *testing.T, v interface{}) []byte {
+func getJSONBody(t *testing.T, v interface{}) []byte {
 	jsonBody, err := json.Marshal(v)
 	require.NoError(t, err)
 
