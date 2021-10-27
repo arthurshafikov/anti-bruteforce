@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+option go_package = "./;generated";
+
+package api;
+
+service AppService {
+    rpc ResetBucket(EmptyRequest) returns (ServerResponse) {}
+    rpc AddToWhiteList(SubnetRequest) returns (ServerResponse) {}
+    rpc AddToBlackList(SubnetRequest) returns (ServerResponse) {}
+    rpc RemoveFromWhiteList(SubnetRequest) returns (ServerResponse) {}
+    rpc RemoveFromBlackList(SubnetRequest) returns (ServerResponse) {}
+}
+
+message SubnetRequest {
+	string subnet = 1;
+}
+
+message EmptyRequest {
+}
+
+message ServerResponse {
+	string data = 1;
+}

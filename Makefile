@@ -17,6 +17,9 @@ test:
 enterdb:
 	docker exec -it ab-postgres psql -U homestead;
 
+generate:
+	protoc -I=api --go_out=internal/server/grpc/generated --go-grpc_out=internal/server/grpc/generated api/AppService.proto
+
 up:
 	docker-compose up --build
 

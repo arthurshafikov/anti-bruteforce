@@ -12,6 +12,7 @@ services:
       DSN: ${DSN}
     ports: 
       - ${APP_HTTP_PORT}:8123
+      - ${APP_GRPC_PORT}:8765
     depends_on: 
       - db 
   db:

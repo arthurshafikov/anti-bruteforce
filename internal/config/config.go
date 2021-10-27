@@ -12,6 +12,7 @@ type Config struct {
 	AppConfig
 	LoggerConfig
 	ServerConfig
+	GrpcServerConfig
 	StorageConfig
 }
 
@@ -27,6 +28,10 @@ type LoggerConfig struct {
 }
 
 type ServerConfig struct {
+	Address string
+}
+
+type GrpcServerConfig struct {
 	Address string
 }
 
