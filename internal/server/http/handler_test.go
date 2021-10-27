@@ -40,7 +40,7 @@ func TestResetBucket(t *testing.T) {
 
 	h.ResetBucket(c)
 
-	require.Equal(t, http.StatusNoContent, w.Code)
+	require.Equal(t, http.StatusOK, w.Code)
 }
 
 func TestAddToWhiteList(t *testing.T) {
