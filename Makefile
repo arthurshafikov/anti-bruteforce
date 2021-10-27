@@ -10,7 +10,7 @@ run: build
 	 DSN="user=homestead password=secret dbname=homestead sslmode=disable" $(BIN) --configFolder ./configs
 
 test: 
-	go test ./...
+	go test --short -race ./internal/... ./pkg/...
 
 .PHONY: build run test
 
@@ -25,3 +25,10 @@ up:
 
 down:
 	docker-compose down --volumes
+	
+integration-tests:
+	docker-compose -f docker-compose.tests.yml up --build --abort-on-container-exit --exit-code-from integration-tests
+	docker-compose -f docker-compose.tests.yml down --volumes
+
+reset-integration-tests:
+	docker-compose -f docker-compose.tests.yml down --volumes	
