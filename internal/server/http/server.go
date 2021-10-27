@@ -23,24 +23,24 @@ type ServerHandler interface {
 type Server struct {
 	httpSrv *http.Server
 	address string
-	engine  *gin.Engine
+	Engine  *gin.Engine
 	handler ServerHandler
 }
 
 func NewServer(address string, handler ServerHandler) *Server {
 	return &Server{
 		address: address,
-		engine:  gin.Default(),
+		Engine:  gin.Default(),
 		handler: handler,
 	}
 }
 
 func (s *Server) Serve(ctx context.Context) {
-	s.initRoutes()
+	s.InitRoutes()
 
 	s.httpSrv = &http.Server{
 		Addr:    s.address,
-		Handler: s.engine,
+		Handler: s.Engine,
 	}
 
 	go s.shutdownOnContextDone(ctx)
@@ -62,12 +62,12 @@ func (s *Server) shutdownOnContextDone(ctx context.Context) {
 	cancel()
 }
 
-func (s *Server) initRoutes() {
-	s.engine.GET("/", s.handler.Home)
-	s.engine.POST("/authorize", s.handler.Authorize)
-	s.engine.POST("/bucket/reset", s.handler.ResetBucket)
-	s.engine.POST("/whitelist/add", s.handler.AddToWhiteList)
-	s.engine.DELETE("/whitelist/remove", s.handler.RemoveFromWhiteList)
-	s.engine.POST("/blacklist/add", s.handler.AddToBlackList)
-	s.engine.DELETE("/blacklist/remove", s.handler.RemoveFromBlackList)
+func (s *Server) InitRoutes() {
+	s.Engine.GET("/", s.handler.Home)
+	s.Engine.POST("/authorize", s.handler.Authorize)
+	s.Engine.POST("/bucket/reset", s.handler.ResetBucket)
+	s.Engine.POST("/whitelist/add", s.handler.AddToWhiteList)
+	s.Engine.DELETE("/whitelist/remove", s.handler.RemoveFromWhiteList)
+	s.Engine.POST("/blacklist/add", s.handler.AddToBlackList)
+	s.Engine.DELETE("/blacklist/remove", s.handler.RemoveFromBlackList)
 }
