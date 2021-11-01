@@ -19,10 +19,10 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AppServiceClient interface {
 	ResetBucket(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*ServerResponse, error)
-	AddToWhiteList(ctx context.Context, in *SubnetRequest, opts ...grpc.CallOption) (*ServerResponse, error)
-	AddToBlackList(ctx context.Context, in *SubnetRequest, opts ...grpc.CallOption) (*ServerResponse, error)
-	RemoveFromWhiteList(ctx context.Context, in *SubnetRequest, opts ...grpc.CallOption) (*ServerResponse, error)
-	RemoveFromBlackList(ctx context.Context, in *SubnetRequest, opts ...grpc.CallOption) (*ServerResponse, error)
+	AddToWhitelist(ctx context.Context, in *SubnetRequest, opts ...grpc.CallOption) (*ServerResponse, error)
+	AddToBlacklist(ctx context.Context, in *SubnetRequest, opts ...grpc.CallOption) (*ServerResponse, error)
+	RemoveFromWhitelist(ctx context.Context, in *SubnetRequest, opts ...grpc.CallOption) (*ServerResponse, error)
+	RemoveFromBlacklist(ctx context.Context, in *SubnetRequest, opts ...grpc.CallOption) (*ServerResponse, error)
 }
 
 type appServiceClient struct {
@@ -42,36 +42,36 @@ func (c *appServiceClient) ResetBucket(ctx context.Context, in *EmptyRequest, op
 	return out, nil
 }
 
-func (c *appServiceClient) AddToWhiteList(ctx context.Context, in *SubnetRequest, opts ...grpc.CallOption) (*ServerResponse, error) {
+func (c *appServiceClient) AddToWhitelist(ctx context.Context, in *SubnetRequest, opts ...grpc.CallOption) (*ServerResponse, error) {
 	out := new(ServerResponse)
-	err := c.cc.Invoke(ctx, "/api.AppService/AddToWhiteList", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.AppService/AddToWhitelist", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *appServiceClient) AddToBlackList(ctx context.Context, in *SubnetRequest, opts ...grpc.CallOption) (*ServerResponse, error) {
+func (c *appServiceClient) AddToBlacklist(ctx context.Context, in *SubnetRequest, opts ...grpc.CallOption) (*ServerResponse, error) {
 	out := new(ServerResponse)
-	err := c.cc.Invoke(ctx, "/api.AppService/AddToBlackList", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.AppService/AddToBlacklist", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *appServiceClient) RemoveFromWhiteList(ctx context.Context, in *SubnetRequest, opts ...grpc.CallOption) (*ServerResponse, error) {
+func (c *appServiceClient) RemoveFromWhitelist(ctx context.Context, in *SubnetRequest, opts ...grpc.CallOption) (*ServerResponse, error) {
 	out := new(ServerResponse)
-	err := c.cc.Invoke(ctx, "/api.AppService/RemoveFromWhiteList", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.AppService/RemoveFromWhitelist", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *appServiceClient) RemoveFromBlackList(ctx context.Context, in *SubnetRequest, opts ...grpc.CallOption) (*ServerResponse, error) {
+func (c *appServiceClient) RemoveFromBlacklist(ctx context.Context, in *SubnetRequest, opts ...grpc.CallOption) (*ServerResponse, error) {
 	out := new(ServerResponse)
-	err := c.cc.Invoke(ctx, "/api.AppService/RemoveFromBlackList", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.AppService/RemoveFromBlacklist", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -83,10 +83,10 @@ func (c *appServiceClient) RemoveFromBlackList(ctx context.Context, in *SubnetRe
 // for forward compatibility
 type AppServiceServer interface {
 	ResetBucket(context.Context, *EmptyRequest) (*ServerResponse, error)
-	AddToWhiteList(context.Context, *SubnetRequest) (*ServerResponse, error)
-	AddToBlackList(context.Context, *SubnetRequest) (*ServerResponse, error)
-	RemoveFromWhiteList(context.Context, *SubnetRequest) (*ServerResponse, error)
-	RemoveFromBlackList(context.Context, *SubnetRequest) (*ServerResponse, error)
+	AddToWhitelist(context.Context, *SubnetRequest) (*ServerResponse, error)
+	AddToBlacklist(context.Context, *SubnetRequest) (*ServerResponse, error)
+	RemoveFromWhitelist(context.Context, *SubnetRequest) (*ServerResponse, error)
+	RemoveFromBlacklist(context.Context, *SubnetRequest) (*ServerResponse, error)
 	mustEmbedUnimplementedAppServiceServer()
 }
 
@@ -97,17 +97,17 @@ type UnimplementedAppServiceServer struct {
 func (UnimplementedAppServiceServer) ResetBucket(context.Context, *EmptyRequest) (*ServerResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ResetBucket not implemented")
 }
-func (UnimplementedAppServiceServer) AddToWhiteList(context.Context, *SubnetRequest) (*ServerResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddToWhiteList not implemented")
+func (UnimplementedAppServiceServer) AddToWhitelist(context.Context, *SubnetRequest) (*ServerResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddToWhitelist not implemented")
 }
-func (UnimplementedAppServiceServer) AddToBlackList(context.Context, *SubnetRequest) (*ServerResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddToBlackList not implemented")
+func (UnimplementedAppServiceServer) AddToBlacklist(context.Context, *SubnetRequest) (*ServerResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddToBlacklist not implemented")
 }
-func (UnimplementedAppServiceServer) RemoveFromWhiteList(context.Context, *SubnetRequest) (*ServerResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RemoveFromWhiteList not implemented")
+func (UnimplementedAppServiceServer) RemoveFromWhitelist(context.Context, *SubnetRequest) (*ServerResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RemoveFromWhitelist not implemented")
 }
-func (UnimplementedAppServiceServer) RemoveFromBlackList(context.Context, *SubnetRequest) (*ServerResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RemoveFromBlackList not implemented")
+func (UnimplementedAppServiceServer) RemoveFromBlacklist(context.Context, *SubnetRequest) (*ServerResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RemoveFromBlacklist not implemented")
 }
 func (UnimplementedAppServiceServer) mustEmbedUnimplementedAppServiceServer() {}
 
@@ -140,74 +140,74 @@ func _AppService_ResetBucket_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AppService_AddToWhiteList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _AppService_AddToWhitelist_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SubnetRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AppServiceServer).AddToWhiteList(ctx, in)
+		return srv.(AppServiceServer).AddToWhitelist(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.AppService/AddToWhiteList",
+		FullMethod: "/api.AppService/AddToWhitelist",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AppServiceServer).AddToWhiteList(ctx, req.(*SubnetRequest))
+		return srv.(AppServiceServer).AddToWhitelist(ctx, req.(*SubnetRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AppService_AddToBlackList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _AppService_AddToBlacklist_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SubnetRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AppServiceServer).AddToBlackList(ctx, in)
+		return srv.(AppServiceServer).AddToBlacklist(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.AppService/AddToBlackList",
+		FullMethod: "/api.AppService/AddToBlacklist",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AppServiceServer).AddToBlackList(ctx, req.(*SubnetRequest))
+		return srv.(AppServiceServer).AddToBlacklist(ctx, req.(*SubnetRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AppService_RemoveFromWhiteList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _AppService_RemoveFromWhitelist_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SubnetRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AppServiceServer).RemoveFromWhiteList(ctx, in)
+		return srv.(AppServiceServer).RemoveFromWhitelist(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.AppService/RemoveFromWhiteList",
+		FullMethod: "/api.AppService/RemoveFromWhitelist",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AppServiceServer).RemoveFromWhiteList(ctx, req.(*SubnetRequest))
+		return srv.(AppServiceServer).RemoveFromWhitelist(ctx, req.(*SubnetRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AppService_RemoveFromBlackList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _AppService_RemoveFromBlacklist_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SubnetRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AppServiceServer).RemoveFromBlackList(ctx, in)
+		return srv.(AppServiceServer).RemoveFromBlacklist(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.AppService/RemoveFromBlackList",
+		FullMethod: "/api.AppService/RemoveFromBlacklist",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AppServiceServer).RemoveFromBlackList(ctx, req.(*SubnetRequest))
+		return srv.(AppServiceServer).RemoveFromBlacklist(ctx, req.(*SubnetRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -224,20 +224,20 @@ var AppService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _AppService_ResetBucket_Handler,
 		},
 		{
-			MethodName: "AddToWhiteList",
-			Handler:    _AppService_AddToWhiteList_Handler,
+			MethodName: "AddToWhitelist",
+			Handler:    _AppService_AddToWhitelist_Handler,
 		},
 		{
-			MethodName: "AddToBlackList",
-			Handler:    _AppService_AddToBlackList_Handler,
+			MethodName: "AddToBlacklist",
+			Handler:    _AppService_AddToBlacklist_Handler,
 		},
 		{
-			MethodName: "RemoveFromWhiteList",
-			Handler:    _AppService_RemoveFromWhiteList_Handler,
+			MethodName: "RemoveFromWhitelist",
+			Handler:    _AppService_RemoveFromWhitelist_Handler,
 		},
 		{
-			MethodName: "RemoveFromBlackList",
-			Handler:    _AppService_RemoveFromBlackList_Handler,
+			MethodName: "RemoveFromBlacklist",
+			Handler:    _AppService_RemoveFromBlacklist_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

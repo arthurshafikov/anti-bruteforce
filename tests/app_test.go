@@ -53,7 +53,7 @@ func (h *appSuiteHandler) TestTryToAuthorizeWithResetBucket() {
 	}
 }
 
-func (h *appSuiteHandler) TestAddToWhiteListAndTryToAuthorizeMoreThanLimit() {
+func (h *appSuiteHandler) TestAddToWhitelistAndTryToAuthorizeMoreThanLimit() {
 	subnet := getJSONBody(h.T(), subnetInput)
 
 	recorder := h.makeServerHTTPRequest(http.MethodPost, "/whitelist/add", bytes.NewBuffer(subnet))
@@ -68,7 +68,7 @@ func (h *appSuiteHandler) TestAddToWhiteListAndTryToAuthorizeMoreThanLimit() {
 	}
 }
 
-func (h *appSuiteHandler) TestAddToBlackListAndTryToAuthorize() {
+func (h *appSuiteHandler) TestAddToBlacklistAndTryToAuthorize() {
 	subnet := getJSONBody(h.T(), subnetInput)
 
 	recorder := h.makeServerHTTPRequest(http.MethodPost, "/blacklist/add", bytes.NewBuffer(subnet))
@@ -81,7 +81,7 @@ func (h *appSuiteHandler) TestAddToBlackListAndTryToAuthorize() {
 	require.Equal(h.T(), tooManyRequestsResponse, body)
 }
 
-func (h *appSuiteHandler) TestAddToBlackListWrongSubnetFormat() {
+func (h *appSuiteHandler) TestAddToBlacklistWrongSubnetFormat() {
 	subnetStr := "asfasfafs"
 	subnet := getJSONBody(h.T(), models.SubnetInput{
 		Subnet: subnetStr,
@@ -131,7 +131,7 @@ func (h *appSuiteHandler) TestManyIPsTryingToAuthorize() {
 	}
 }
 
-func (h *appSuiteHandler) TestAddAndRemoveFromWhiteList() {
+func (h *appSuiteHandler) TestAddAndRemoveFromWhitelist() {
 	subnet := getJSONBody(h.T(), subnetInput)
 
 	recorder := h.makeServerHTTPRequest(http.MethodPost, "/blacklist/add", bytes.NewBuffer(subnet))

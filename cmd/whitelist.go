@@ -24,7 +24,7 @@ var whitelistAdd = &cobra.Command{
 	Long:  "add subnet to the table",
 	Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		err := app.AddToWhiteList(args[0])
+		err := app.AddToWhitelist(args[0])
 		if err != nil {
 			echoErrorAndExit(err)
 		}
@@ -39,7 +39,7 @@ var whitelistRemove = &cobra.Command{
 	Long:  "remove subnet from the table",
 	Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		err := app.RemoveFromWhiteList(args[0])
+		err := app.RemoveFromWhitelist(args[0])
 		if err != nil {
 			echoErrorAndExit(err)
 		}

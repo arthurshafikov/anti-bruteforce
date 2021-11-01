@@ -11,18 +11,18 @@ func (app *App) Authorize(models.AuthorizeInput) bool {
 func (app *App) ResetBucket() {
 }
 
-func (app *App) AddToWhiteList(subnetInput models.SubnetInput) error {
+func (app *App) AddToWhitelist(subnetInput models.SubnetInput) error {
 	return nil
 }
 
-func (app *App) AddToBlackList(subnetInput models.SubnetInput) error {
+func (app *App) AddToBlacklist(subnetInput models.SubnetInput) error {
 	return nil
 }
 
-func (app *App) RemoveFromWhiteList(subnetInput models.SubnetInput) error {
+func (app *App) RemoveFromWhitelist(subnetInput models.SubnetInput) error {
 	return nil
 }
 
-func (app *App) RemoveFromBlackList(subnetInput models.SubnetInput) error {
+func (app *App) RemoveFromBlacklist(subnetInput models.SubnetInput) error {
 	return nil
 }
