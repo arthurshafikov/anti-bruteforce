@@ -14,10 +14,10 @@ type ServerHandler interface {
 	Home(*gin.Context)
 	Authorize(*gin.Context)
 	ResetBucket(*gin.Context)
-	AddToWhiteList(*gin.Context)
-	AddToBlackList(*gin.Context)
-	RemoveFromWhiteList(*gin.Context)
-	RemoveFromBlackList(*gin.Context)
+	AddToWhitelist(*gin.Context)
+	AddToBlacklist(*gin.Context)
+	RemoveFromWhitelist(*gin.Context)
+	RemoveFromBlacklist(*gin.Context)
 }
 
 type Server struct {
@@ -66,8 +66,8 @@ func (s *Server) InitRoutes() {
 	s.Engine.GET("/", s.handler.Home)
 	s.Engine.POST("/authorize", s.handler.Authorize)
 	s.Engine.POST("/bucket/reset", s.handler.ResetBucket)
-	s.Engine.POST("/whitelist/add", s.handler.AddToWhiteList)
-	s.Engine.DELETE("/whitelist/remove", s.handler.RemoveFromWhiteList)
-	s.Engine.POST("/blacklist/add", s.handler.AddToBlackList)
-	s.Engine.DELETE("/blacklist/remove", s.handler.RemoveFromBlackList)
+	s.Engine.POST("/whitelist/add", s.handler.AddToWhitelist)
+	s.Engine.DELETE("/whitelist/remove", s.handler.RemoveFromWhitelist)
+	s.Engine.POST("/blacklist/add", s.handler.AddToBlacklist)
+	s.Engine.DELETE("/blacklist/remove", s.handler.RemoveFromBlacklist)
 }

@@ -7,12 +7,12 @@ import (
 )
 
 type Storage interface {
-	AddToWhiteList(string) error
-	AddToBlackList(string) error
-	RemoveFromWhiteList(string) error
-	RemoveFromBlackList(string) error
-	CheckIfIPInWhiteList(string) (bool, error)
-	CheckIfIPInBlackList(string) (bool, error)
+	AddToWhitelist(string) error
+	AddToBlacklist(string) error
+	RemoveFromWhitelist(string) error
+	RemoveFromBlacklist(string) error
+	CheckIfIPInWhitelist(string) (bool, error)
+	CheckIfIPInBlacklist(string) (bool, error)
 	ResetDatabase() error
 }
 
@@ -45,7 +45,7 @@ func NewApp(ctx context.Context, logger Logger, storage Storage, bucket LeakyBuc
 }
 
 func (app *App) Authorize(input models.AuthorizeInput) bool {
-	res, err := app.Storage.CheckIfIPInBlackList(input.IP)
+	res, err := app.Storage.CheckIfIPInBlacklist(input.IP)
 	if err != nil {
 		app.Logger.Error(err.Error())
 		return false
@@ -54,7 +54,7 @@ func (app *App) Authorize(input models.AuthorizeInput) bool {
 		return false
 	}
 
-	res, err = app.Storage.CheckIfIPInWhiteList(input.IP)
+	res, err = app.Storage.CheckIfIPInWhitelist(input.IP)
 	if err != nil {
 		app.Logger.Error(err.Error())
 		return false
@@ -70,8 +70,8 @@ func (app *App) ResetBucket() {
 	app.LeakyBucket.ResetResetBucketTicker()
 }
 
-func (app *App) AddToWhiteList(subnetInput models.SubnetInput) error {
-	err := app.Storage.AddToWhiteList(subnetInput.Subnet)
+func (app *App) AddToWhitelist(subnetInput models.SubnetInput) error {
+	err := app.Storage.AddToWhitelist(subnetInput.Subnet)
 	if err != nil {
 		return err
 	}
@@ -79,8 +79,8 @@ func (app *App) AddToWhiteList(subnetInput models.SubnetInput) error {
 	return nil
 }
 
-func (app *App) AddToBlackList(subnetInput models.SubnetInput) error {
-	err := app.Storage.AddToBlackList(subnetInput.Subnet)
+func (app *App) AddToBlacklist(subnetInput models.SubnetInput) error {
+	err := app.Storage.AddToBlacklist(subnetInput.Subnet)
 	if err != nil {
 		return err
 	}
@@ -88,8 +88,8 @@ func (app *App) AddToBlackList(subnetInput models.SubnetInput) error {
 	return nil
 }
 
-func (app *App) RemoveFromWhiteList(subnetInput models.SubnetInput) error {
-	err := app.Storage.RemoveFromWhiteList(subnetInput.Subnet)
+func (app *App) RemoveFromWhitelist(subnetInput models.SubnetInput) error {
+	err := app.Storage.RemoveFromWhitelist(subnetInput.Subnet)
 	if err != nil {
 		return err
 	}
@@ -97,8 +97,8 @@ func (app *App) RemoveFromWhiteList(subnetInput models.SubnetInput) error {
 	return nil
 }
 
-func (app *App) RemoveFromBlackList(subnetInput models.SubnetInput) error {
-	err := app.Storage.RemoveFromBlackList(subnetInput.Subnet)
+func (app *App) RemoveFromBlacklist(subnetInput models.SubnetInput) error {
+	err := app.Storage.RemoveFromBlacklist(subnetInput.Subnet)
 	if err != nil {
 		return err
 	}

@@ -24,8 +24,8 @@ func NewAppCli(address string) *AppCli {
 	}
 }
 
-func (app *AppCli) AddToWhiteList(subnet string) error {
-	_, err := app.grpcClient.AddToWhiteList(app.ctx, &generated.SubnetRequest{
+func (app *AppCli) AddToWhitelist(subnet string) error {
+	_, err := app.grpcClient.AddToWhitelist(app.ctx, &generated.SubnetRequest{
 		Subnet: subnet,
 	})
 	if err != nil {
@@ -36,8 +36,8 @@ func (app *AppCli) AddToWhiteList(subnet string) error {
 	return nil
 }
 
-func (app *AppCli) RemoveFromWhiteList(subnet string) error {
-	_, err := app.grpcClient.RemoveFromWhiteList(app.ctx, &generated.SubnetRequest{
+func (app *AppCli) RemoveFromWhitelist(subnet string) error {
+	_, err := app.grpcClient.RemoveFromWhitelist(app.ctx, &generated.SubnetRequest{
 		Subnet: subnet,
 	})
 	if err != nil {
@@ -48,8 +48,8 @@ func (app *AppCli) RemoveFromWhiteList(subnet string) error {
 	return nil
 }
 
-func (app *AppCli) AddToBlackList(subnet string) error {
-	_, err := app.grpcClient.AddToBlackList(app.ctx, &generated.SubnetRequest{
+func (app *AppCli) AddToBlacklist(subnet string) error {
+	_, err := app.grpcClient.AddToBlacklist(app.ctx, &generated.SubnetRequest{
 		Subnet: subnet,
 	})
 	if err != nil {
@@ -60,8 +60,8 @@ func (app *AppCli) AddToBlackList(subnet string) error {
 	return nil
 }
 
-func (app *AppCli) RemoveFromBlackList(subnet string) error {
-	_, err := app.grpcClient.RemoveFromBlackList(app.ctx, &generated.SubnetRequest{
+func (app *AppCli) RemoveFromBlacklist(subnet string) error {
+	_, err := app.grpcClient.RemoveFromBlacklist(app.ctx, &generated.SubnetRequest{
 		Subnet: subnet,
 	})
 	if err != nil {

@@ -26,75 +26,75 @@ func newSQLStorageMock(t *testing.T) (*sql.DB, sqlmock.Sqlmock, Storage) {
 	return mockDB, mock, mockStorage
 }
 
-func TestAddToWhiteList(t *testing.T) {
+func TestAddToWhitelist(t *testing.T) {
 	mockDB, mock, mockStorage := newSQLStorageMock(t)
 	defer mockDB.Close()
 
-	mock.ExpectExec(fmt.Sprintf("INSERT INTO %s", WhiteListIpsTable)).
+	mock.ExpectExec(fmt.Sprintf("INSERT INTO %s", WhitelistIpsTable)).
 		WithArgs(testSubnet).
 		WillReturnResult(sqlmock.NewResult(0, 0))
 
-	err := mockStorage.AddToWhiteList(testSubnet)
+	err := mockStorage.AddToWhitelist(testSubnet)
 	require.NoError(t, err)
 
 	err = mock.ExpectationsWereMet()
 	require.NoError(t, err)
 }
 
-func TestRemoveFromWhiteList(t *testing.T) {
+func TestRemoveFromWhitelist(t *testing.T) {
 	mockDB, mock, mockStorage := newSQLStorageMock(t)
 	defer mockDB.Close()
 
-	mock.ExpectExec(fmt.Sprintf("DELETE FROM %s", WhiteListIpsTable)).
+	mock.ExpectExec(fmt.Sprintf("DELETE FROM %s", WhitelistIpsTable)).
 		WithArgs(testSubnet).
 		WillReturnResult(sqlmock.NewResult(0, 0))
 
-	err := mockStorage.RemoveFromWhiteList(testSubnet)
+	err := mockStorage.RemoveFromWhitelist(testSubnet)
 	require.NoError(t, err)
 
 	err = mock.ExpectationsWereMet()
 	require.NoError(t, err)
 }
 
-func TestAddToBlackList(t *testing.T) {
+func TestAddToBlacklist(t *testing.T) {
 	mockDB, mock, mockStorage := newSQLStorageMock(t)
 	defer mockDB.Close()
 
-	mock.ExpectExec(fmt.Sprintf("INSERT INTO %s", BlackListIpsTable)).
+	mock.ExpectExec(fmt.Sprintf("INSERT INTO %s", BlacklistIpsTable)).
 		WithArgs(testSubnet).
 		WillReturnResult(sqlmock.NewResult(0, 0))
 
-	err := mockStorage.AddToBlackList(testSubnet)
+	err := mockStorage.AddToBlacklist(testSubnet)
 	require.NoError(t, err)
 
 	err = mock.ExpectationsWereMet()
 	require.NoError(t, err)
 }
 
-func TestRemoveFromBlackList(t *testing.T) {
+func TestRemoveFromBlacklist(t *testing.T) {
 	mockDB, mock, mockStorage := newSQLStorageMock(t)
 	defer mockDB.Close()
 
-	mock.ExpectExec(fmt.Sprintf("DELETE FROM %s", BlackListIpsTable)).
+	mock.ExpectExec(fmt.Sprintf("DELETE FROM %s", BlacklistIpsTable)).
 		WithArgs(testSubnet).
 		WillReturnResult(sqlmock.NewResult(0, 0))
 
-	err := mockStorage.RemoveFromBlackList(testSubnet)
+	err := mockStorage.RemoveFromBlacklist(testSubnet)
 	require.NoError(t, err)
 
 	err = mock.ExpectationsWereMet()
 	require.NoError(t, err)
 }
 
-func TestCheckIfIPInWhiteList(t *testing.T) {
+func TestCheckIfIPInWhitelist(t *testing.T) {
 	mockDB, mock, mockStorage := newSQLStorageMock(t)
 	defer mockDB.Close()
 
-	mock.ExpectExec(fmt.Sprintf("SELECT 1 FROM %s", WhiteListIpsTable)).
+	mock.ExpectExec(fmt.Sprintf("SELECT 1 FROM %s", WhitelistIpsTable)).
 		WithArgs(testSubnet).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
-	res, err := mockStorage.CheckIfIPInWhiteList(testSubnet)
+	res, err := mockStorage.CheckIfIPInWhitelist(testSubnet)
 	require.NoError(t, err)
 	require.True(t, res)
 
@@ -102,15 +102,15 @@ func TestCheckIfIPInWhiteList(t *testing.T) {
 	require.NoError(t, err)
 }
 
-func TestCheckIfIPInBlackList(t *testing.T) {
+func TestCheckIfIPInBlacklist(t *testing.T) {
 	mockDB, mock, mockStorage := newSQLStorageMock(t)
 	defer mockDB.Close()
 
-	mock.ExpectExec(fmt.Sprintf("SELECT 1 FROM %s", BlackListIpsTable)).
+	mock.ExpectExec(fmt.Sprintf("SELECT 1 FROM %s", BlacklistIpsTable)).
 		WithArgs(testSubnet).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
-	res, err := mockStorage.CheckIfIPInBlackList(testSubnet)
+	res, err := mockStorage.CheckIfIPInBlacklist(testSubnet)
 	require.NoError(t, err)
 	require.True(t, res)
 

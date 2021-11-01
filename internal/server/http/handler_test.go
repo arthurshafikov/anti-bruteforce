@@ -43,12 +43,12 @@ func TestResetBucket(t *testing.T) {
 	require.Equal(t, http.StatusOK, w.Code)
 }
 
-func TestAddToWhiteList(t *testing.T) {
+func TestAddToWhitelist(t *testing.T) {
 	t.Run("without json body", func(t *testing.T) {
 		w, c, h := getWriterContextAndHandler()
 		c.Request = httptest.NewRequest(http.MethodPost, "/whitelist/add", nil)
 
-		h.AddToWhiteList(c)
+		h.AddToWhitelist(c)
 
 		require.Equal(t, http.StatusUnprocessableEntity, w.Code)
 	})
@@ -58,18 +58,18 @@ func TestAddToWhiteList(t *testing.T) {
 		jsonBody := getSubnetJSONBody(t)
 		c.Request = httptest.NewRequest(http.MethodPost, "/whitelist/add", bytes.NewBuffer(jsonBody))
 
-		h.AddToWhiteList(c)
+		h.AddToWhitelist(c)
 
 		require.Equal(t, http.StatusCreated, w.Code)
 	})
 }
 
-func TestRemoveFromWhiteList(t *testing.T) {
+func TestRemoveFromWhitelist(t *testing.T) {
 	t.Run("without json body", func(t *testing.T) {
 		w, c, h := getWriterContextAndHandler()
 		c.Request = httptest.NewRequest(http.MethodDelete, "/whitelist/remove", nil)
 
-		h.RemoveFromWhiteList(c)
+		h.RemoveFromWhitelist(c)
 
 		require.Equal(t, http.StatusUnprocessableEntity, w.Code)
 	})
@@ -79,18 +79,18 @@ func TestRemoveFromWhiteList(t *testing.T) {
 		jsonBody := getSubnetJSONBody(t)
 		c.Request = httptest.NewRequest(http.MethodDelete, "/whitelist/remove", bytes.NewBuffer(jsonBody))
 
-		h.RemoveFromWhiteList(c)
+		h.RemoveFromWhitelist(c)
 
 		require.Equal(t, http.StatusOK, w.Code)
 	})
 }
 
-func TestAddToBlackList(t *testing.T) {
+func TestAddToBlacklist(t *testing.T) {
 	t.Run("without json body", func(t *testing.T) {
 		w, c, h := getWriterContextAndHandler()
 		c.Request = httptest.NewRequest(http.MethodPost, "/blacklist/add", nil)
 
-		h.AddToBlackList(c)
+		h.AddToBlacklist(c)
 
 		require.Equal(t, http.StatusUnprocessableEntity, w.Code)
 	})
@@ -100,18 +100,18 @@ func TestAddToBlackList(t *testing.T) {
 		jsonBody := getSubnetJSONBody(t)
 		c.Request = httptest.NewRequest(http.MethodPost, "/blacklist/add", bytes.NewBuffer(jsonBody))
 
-		h.AddToBlackList(c)
+		h.AddToBlacklist(c)
 
 		require.Equal(t, http.StatusCreated, w.Code)
 	})
 }
 
-func TestRemoveFromBlackList(t *testing.T) {
+func TestRemoveFromBlacklist(t *testing.T) {
 	t.Run("without json body", func(t *testing.T) {
 		w, c, h := getWriterContextAndHandler()
 		c.Request = httptest.NewRequest(http.MethodDelete, "/blacklist/remove", nil)
 
-		h.RemoveFromBlackList(c)
+		h.RemoveFromBlacklist(c)
 
 		require.Equal(t, http.StatusUnprocessableEntity, w.Code)
 	})
@@ -121,7 +121,7 @@ func TestRemoveFromBlackList(t *testing.T) {
 		jsonBody := getSubnetJSONBody(t)
 		c.Request = httptest.NewRequest(http.MethodDelete, "/blacklist/remove", bytes.NewBuffer(jsonBody))
 
-		h.RemoveFromBlackList(c)
+		h.RemoveFromBlacklist(c)
 
 		require.Equal(t, http.StatusOK, w.Code)
 	})
