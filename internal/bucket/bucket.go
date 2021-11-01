@@ -2,7 +2,6 @@ package bucket
 
 import (
 	"context"
-	"log"
 	"sync"
 	"time"
 
@@ -36,7 +35,6 @@ func NewLeakyBucket(ctx context.Context, authLimits models.AuthorizeLimits) *Lea
 	resetBucketsTicker := time.NewTicker(resetBucketInterval)
 	go func() {
 		<-ctx.Done()
-		log.Println("Ticker stops")
 		resetBucketsTicker.Stop()
 	}()
 
@@ -121,6 +119,5 @@ func (lb *LeakyBucket) Leak() {
 		}
 
 		lb.resetBucket()
-		log.Println("Leak")
 	}
 }
