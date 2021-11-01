@@ -6,10 +6,10 @@ package api;
 
 service AppService {
     rpc ResetBucket(EmptyRequest) returns (ServerResponse) {}
-    rpc AddToWhiteList(SubnetRequest) returns (ServerResponse) {}
-    rpc AddToBlackList(SubnetRequest) returns (ServerResponse) {}
-    rpc RemoveFromWhiteList(SubnetRequest) returns (ServerResponse) {}
-    rpc RemoveFromBlackList(SubnetRequest) returns (ServerResponse) {}
+    rpc AddToWhitelist(SubnetRequest) returns (ServerResponse) {}
+    rpc AddToBlacklist(SubnetRequest) returns (ServerResponse) {}
+    rpc RemoveFromWhitelist(SubnetRequest) returns (ServerResponse) {}
+    rpc RemoveFromBlacklist(SubnetRequest) returns (ServerResponse) {}
 }
 
 message SubnetRequest {

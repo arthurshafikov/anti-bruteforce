@@ -31,10 +31,10 @@ type ServerResponse struct {
 type App interface {
 	Authorize(models.AuthorizeInput) bool
 	ResetBucket()
-	AddToWhiteList(models.SubnetInput) error
-	AddToBlackList(models.SubnetInput) error
-	RemoveFromWhiteList(models.SubnetInput) error
-	RemoveFromBlackList(models.SubnetInput) error
+	AddToWhitelist(models.SubnetInput) error
+	AddToBlacklist(models.SubnetInput) error
+	RemoveFromWhitelist(models.SubnetInput) error
+	RemoveFromBlacklist(models.SubnetInput) error
 }
 
 type Handler struct {
@@ -74,13 +74,13 @@ func (h *Handler) ResetBucket(c *gin.Context) {
 	c.JSON(http.StatusOK, ServerResponse{OkResponseMessage})
 }
 
-func (h *Handler) AddToWhiteList(c *gin.Context) {
+func (h *Handler) AddToWhitelist(c *gin.Context) {
 	subnetInput, err := h.getSubnetInput(c)
 	if err != nil {
 		return
 	}
 
-	err = h.App.AddToWhiteList(subnetInput)
+	err = h.App.AddToWhitelist(subnetInput)
 	if err != nil {
 		h.setUnprocessableEntityJSONResponse(c, err.Error())
 		return
@@ -89,13 +89,13 @@ func (h *Handler) AddToWhiteList(c *gin.Context) {
 	h.setJSONResponse(c, http.StatusCreated, OkResponseMessage)
 }
 
-func (h *Handler) AddToBlackList(c *gin.Context) {
+func (h *Handler) AddToBlacklist(c *gin.Context) {
 	subnetInput, err := h.getSubnetInput(c)
 	if err != nil {
 		return
 	}
 
-	err = h.App.AddToBlackList(subnetInput)
+	err = h.App.AddToBlacklist(subnetInput)
 	if err != nil {
 		h.setUnprocessableEntityJSONResponse(c, err.Error())
 		return
@@ -104,13 +104,13 @@ func (h *Handler) AddToBlackList(c *gin.Context) {
 	h.setJSONResponse(c, http.StatusCreated, OkResponseMessage)
 }
 
-func (h *Handler) RemoveFromWhiteList(c *gin.Context) {
+func (h *Handler) RemoveFromWhitelist(c *gin.Context) {
 	subnetInput, err := h.getSubnetInput(c)
 	if err != nil {
 		return
 	}
 
-	err = h.App.RemoveFromWhiteList(subnetInput)
+	err = h.App.RemoveFromWhitelist(subnetInput)
 	if err != nil {
 		h.setUnprocessableEntityJSONResponse(c, err.Error())
 		return
@@ -119,13 +119,13 @@ func (h *Handler) RemoveFromWhiteList(c *gin.Context) {
 	h.setOkJSONResponse(c)
 }
 
-func (h *Handler) RemoveFromBlackList(c *gin.Context) {
+func (h *Handler) RemoveFromBlacklist(c *gin.Context) {
 	subnetInput, err := h.getSubnetInput(c)
 	if err != nil {
 		return
 	}
 
-	err = h.App.RemoveFromBlackList(subnetInput)
+	err = h.App.RemoveFromBlacklist(subnetInput)
 	if err != nil {
 		h.setUnprocessableEntityJSONResponse(c, err.Error())
 		return

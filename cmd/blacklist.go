@@ -24,7 +24,7 @@ var blacklistAdd = &cobra.Command{
 	Long:  "add subnet to the table",
 	Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		err := app.AddToBlackList(args[0])
+		err := app.AddToBlacklist(args[0])
 		if err != nil {
 			echoErrorAndExit(err)
 		}
@@ -39,7 +39,7 @@ var blacklistRemove = &cobra.Command{
 	Long:  "remove subnet from the table",
 	Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		err := app.RemoveFromBlackList(args[0])
+		err := app.RemoveFromBlacklist(args[0])
 		if err != nil {
 			echoErrorAndExit(err)
 		}

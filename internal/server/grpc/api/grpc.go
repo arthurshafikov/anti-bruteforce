@@ -9,10 +9,10 @@ import (
 
 type App interface {
 	ResetBucket()
-	AddToWhiteList(models.SubnetInput) error
-	AddToBlackList(models.SubnetInput) error
-	RemoveFromWhiteList(models.SubnetInput) error
-	RemoveFromBlackList(models.SubnetInput) error
+	AddToWhitelist(models.SubnetInput) error
+	AddToBlacklist(models.SubnetInput) error
+	RemoveFromWhitelist(models.SubnetInput) error
+	RemoveFromBlacklist(models.SubnetInput) error
 }
 
 var successResponse = &generated.ServerResponse{
@@ -30,11 +30,11 @@ func (a *AppService) ResetBucket(ctx context.Context, req *generated.EmptyReques
 	return successResponse, nil
 }
 
-func (a *AppService) AddToWhiteList(
+func (a *AppService) AddToWhitelist(
 	ctx context.Context,
 	req *generated.SubnetRequest,
 ) (*generated.ServerResponse, error) {
-	err := a.App.AddToWhiteList(models.SubnetInput{
+	err := a.App.AddToWhitelist(models.SubnetInput{
 		Subnet: req.Subnet,
 	})
 	if err != nil {
@@ -44,11 +44,11 @@ func (a *AppService) AddToWhiteList(
 	return successResponse, nil
 }
 
-func (a *AppService) AddToBlackList(
+func (a *AppService) AddToBlacklist(
 	ctx context.Context,
 	req *generated.SubnetRequest,
 ) (*generated.ServerResponse, error) {
-	err := a.App.AddToBlackList(models.SubnetInput{
+	err := a.App.AddToBlacklist(models.SubnetInput{
 		Subnet: req.Subnet,
 	})
 	if err != nil {
@@ -58,11 +58,11 @@ func (a *AppService) AddToBlackList(
 	return successResponse, nil
 }
 
-func (a *AppService) RemoveFromWhiteList(
+func (a *AppService) RemoveFromWhitelist(
 	ctx context.Context,
 	req *generated.SubnetRequest,
 ) (*generated.ServerResponse, error) {
-	err := a.App.RemoveFromWhiteList(models.SubnetInput{
+	err := a.App.RemoveFromWhitelist(models.SubnetInput{
 		Subnet: req.Subnet,
 	})
 	if err != nil {
@@ -72,11 +72,11 @@ func (a *AppService) RemoveFromWhiteList(
 	return successResponse, nil
 }
 
-func (a *AppService) RemoveFromBlackList(
+func (a *AppService) RemoveFromBlacklist(
 	ctx context.Context,
 	req *generated.SubnetRequest,
 ) (*generated.ServerResponse, error) {
-	err := a.App.RemoveFromBlackList(models.SubnetInput{
+	err := a.App.RemoveFromBlacklist(models.SubnetInput{
 		Subnet: req.Subnet,
 	})
 	if err != nil {

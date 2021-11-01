@@ -10,13 +10,13 @@ import (
 )
 
 const (
-	// WhiteListIpsTable is a table name.
-	WhiteListIpsTable = "whitelist_ips"
+	// WhitelistIpsTable is a table name.
+	WhitelistIpsTable = "whitelist_ips"
 
-	// BlackListIpsTable is a table name.
-	BlackListIpsTable = "blacklist_ips"
+	// BlacklistIpsTable is a table name.
+	BlacklistIpsTable = "blacklist_ips"
 
-	// SubnetColumnName is a column in WhiteList/BlackList Tables.
+	// SubnetColumnName is a column in Whitelist/Blacklist Tables.
 	SubnetColumnName = "subnet"
 )
 
@@ -49,8 +49,8 @@ func (s *Storage) Close() error {
 	return err
 }
 
-func (s *Storage) AddToWhiteList(subnet string) error {
-	_, err := s.db.Exec(fmt.Sprintf("INSERT INTO %s (%s) VALUES ($1);", WhiteListIpsTable, SubnetColumnName), subnet)
+func (s *Storage) AddToWhitelist(subnet string) error {
+	_, err := s.db.Exec(fmt.Sprintf("INSERT INTO %s (%s) VALUES ($1);", WhitelistIpsTable, SubnetColumnName), subnet)
 	if err != nil {
 		return err
 	}
@@ -58,8 +58,8 @@ func (s *Storage) AddToWhiteList(subnet string) error {
 	return nil
 }
 
-func (s *Storage) RemoveFromWhiteList(subnet string) error {
-	_, err := s.db.Exec(fmt.Sprintf("DELETE FROM %s WHERE %s = $1;", WhiteListIpsTable, SubnetColumnName), subnet)
+func (s *Storage) RemoveFromWhitelist(subnet string) error {
+	_, err := s.db.Exec(fmt.Sprintf("DELETE FROM %s WHERE %s = $1;", WhitelistIpsTable, SubnetColumnName), subnet)
 	if err != nil {
 		return err
 	}
@@ -67,8 +67,8 @@ func (s *Storage) RemoveFromWhiteList(subnet string) error {
 	return nil
 }
 
-func (s *Storage) AddToBlackList(subnet string) error {
-	_, err := s.db.Exec(fmt.Sprintf("INSERT INTO %s (%s) VALUES ($1);", BlackListIpsTable, SubnetColumnName), subnet)
+func (s *Storage) AddToBlacklist(subnet string) error {
+	_, err := s.db.Exec(fmt.Sprintf("INSERT INTO %s (%s) VALUES ($1);", BlacklistIpsTable, SubnetColumnName), subnet)
 	if err != nil {
 		return err
 	}
@@ -76,8 +76,8 @@ func (s *Storage) AddToBlackList(subnet string) error {
 	return nil
 }
 
-func (s *Storage) RemoveFromBlackList(subnet string) error {
-	_, err := s.db.Exec(fmt.Sprintf("DELETE FROM %s WHERE %s = $1;", BlackListIpsTable, SubnetColumnName), subnet)
+func (s *Storage) RemoveFromBlacklist(subnet string) error {
+	_, err := s.db.Exec(fmt.Sprintf("DELETE FROM %s WHERE %s = $1;", BlacklistIpsTable, SubnetColumnName), subnet)
 	if err != nil {
 		return err
 	}
@@ -85,8 +85,8 @@ func (s *Storage) RemoveFromBlackList(subnet string) error {
 	return nil
 }
 
-func (s *Storage) CheckIfIPInWhiteList(ip string) (bool, error) {
-	res, err := s.db.Exec(fmt.Sprintf("SELECT 1 FROM %s WHERE %s >>= $1;", WhiteListIpsTable, SubnetColumnName), ip)
+func (s *Storage) CheckIfIPInWhitelist(ip string) (bool, error) {
+	res, err := s.db.Exec(fmt.Sprintf("SELECT 1 FROM %s WHERE %s >>= $1;", WhitelistIpsTable, SubnetColumnName), ip)
 	if err != nil {
 		return false, err
 	}
@@ -97,8 +97,8 @@ func (s *Storage) CheckIfIPInWhiteList(ip string) (bool, error) {
 	return false, nil
 }
 
-func (s *Storage) CheckIfIPInBlackList(ip string) (bool, error) {
-	res, err := s.db.Exec(fmt.Sprintf("SELECT 1 FROM %s WHERE %s >>= $1;", BlackListIpsTable, SubnetColumnName), ip)
+func (s *Storage) CheckIfIPInBlacklist(ip string) (bool, error) {
+	res, err := s.db.Exec(fmt.Sprintf("SELECT 1 FROM %s WHERE %s >>= $1;", BlacklistIpsTable, SubnetColumnName), ip)
 	if err != nil {
 		return false, err
 	}
@@ -111,8 +111,8 @@ func (s *Storage) CheckIfIPInBlackList(ip string) (bool, error) {
 
 func (s *Storage) ResetDatabase() error {
 	tables := []string{
-		WhiteListIpsTable,
-		BlackListIpsTable,
+		WhitelistIpsTable,
+		BlacklistIpsTable,
 	}
 	_, err := s.db.Exec(fmt.Sprintf(`TRUNCATE TABLE %s`, strings.Join(tables, ", ")))
 
