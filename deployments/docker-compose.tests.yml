@@ -7,7 +7,7 @@ networks:
 services:
   integration-tests:
     build:
-      context: ./
+      context: ../.
       dockerfile: ./build/tests/Dockerfile
     container_name: integration-tests
     environment:
