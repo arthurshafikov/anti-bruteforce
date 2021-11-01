@@ -9,7 +9,3 @@ type AuthorizeInput struct {
 type SubnetInput struct {
 	Subnet string `json:"subnet" binding:"required"`
 }
-
-type AuthorizeLimits struct {
-	LimitAttemptsForLogin, LimitAttemptsForPassword, LimitAttemptsForIP int64
-}
