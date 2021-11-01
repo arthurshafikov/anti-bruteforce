@@ -76,7 +76,7 @@ func (a *AppService) RemoveFromBlackList(
 	ctx context.Context,
 	req *generated.SubnetRequest,
 ) (*generated.ServerResponse, error) {
-	err := a.App.RemoveFromWhiteList(models.SubnetInput{
+	err := a.App.RemoveFromBlackList(models.SubnetInput{
 		Subnet: req.Subnet,
 	})
 	if err != nil {
