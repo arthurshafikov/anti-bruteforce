@@ -11,7 +11,7 @@ type Config struct {
 	AppConfig
 	LoggerConfig
 	ServerConfig
-	GrpcServerConfig
+	GrpcServerConfig ServerConfig
 	StorageConfig
 }
 
@@ -30,10 +30,6 @@ type ServerConfig struct {
 	Address string
 }
 
-type GrpcServerConfig struct {
-	Address string
-}
-
 type StorageConfig struct {
 	Dsn string
 }
@@ -46,8 +42,7 @@ func NewConfig(configFolder string) *Config {
 	}
 
 	var config Config
-	err := viper.Unmarshal(&config)
-	if err != nil {
+	if err := viper.Unmarshal(&config); err != nil {
 		log.Fatalln(err)
 	}
 
