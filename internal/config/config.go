@@ -4,7 +4,6 @@ import (
 	"log"
 	"os"
 
-	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 )
 
@@ -39,10 +38,7 @@ type StorageConfig struct {
 	Dsn string
 }
 
-func NewConfig() *Config {
-	parseFlags()
-
-	configFolder := viper.GetString("configFolder")
+func NewConfig(configFolder string) *Config {
 	viper.SetConfigType("yml")
 	viper.AddConfigPath(configFolder)
 	if err := viper.ReadInConfig(); err != nil {
@@ -58,13 +54,4 @@ func NewConfig() *Config {
 	config.StorageConfig.Dsn = os.Getenv("DSN")
 
 	return &config
-}
-
-func parseFlags() {
-	pflag.String("configFolder", "./configs", "path to configs folder")
-	pflag.Parse()
-	err := viper.BindPFlags(pflag.CommandLine)
-	if err != nil {
-		log.Fatalln(err)
-	}
 }
