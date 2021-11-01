@@ -15,11 +15,10 @@ import (
 	"github.com/thewolf27/anti-bruteforce/pkg/logger"
 )
 
-func Run() {
+func Run(config *config.Config) {
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
 	defer cancel()
 
-	config := config.NewConfig()
 	logger := logger.NewLogger(config.LoggerConfig.Level)
 	storage := storage.NewStorage(config.StorageConfig.Dsn)
 	storage.Connect(ctx)

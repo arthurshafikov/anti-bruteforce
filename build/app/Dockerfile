@@ -15,7 +15,7 @@ ARG LDFLAGS
 
 RUN CGO_ENABLED=0 go build \
         -ldflags "$LDFLAGS" \
-        -o ${BIN_FILE} cmd/*
+        -o ${BIN_FILE} main.go
 
 FROM alpine:3.9
 
@@ -34,4 +34,4 @@ ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.7.2/wait
 RUN chmod +x /wait
 
 CMD /wait && \
-    ${BIN_FILE} --configFolder ${CONFIG_FOLDER}
+    ${BIN_FILE} serve --configFolder ${CONFIG_FOLDER}
