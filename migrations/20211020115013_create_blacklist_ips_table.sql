@@ -2,7 +2,7 @@
 -- +goose StatementBegin
 CREATE TABLE blacklist_ips (
     id serial primary key,
-    subnet INET NOT NULL
+    subnet INET NOT NULL UNIQUE
 );
 -- +goose StatementEnd
 
