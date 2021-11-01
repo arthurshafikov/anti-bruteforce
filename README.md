@@ -1,3 +1,5 @@
+[![Go Report Card](https://goreportcard.com/badge/github.com/thewolf27/anti-bruteforce)](https://goreportcard.com/report/github.com/thewolf27/anti-bruteforce)
+
 # Анти-Брутфорс
 
 Сервис предназначен для борьбы с подбором паролей при авторизации в какой-либо системе.
