@@ -9,9 +9,9 @@ import (
 )
 
 var (
-	successResponse           = "{\"data\":\"OK\"}"
-	wrongSubnetFormatResponse = "{\"data\":\"wrong subnet format\"}"
-	tooManyRequestsResponse   = "{\"data\":\"too many requests\"}"
+	successResponse               = "{\"data\":\"OK\"}"
+	duplicateSubnetResponseFormat = "{\"data\":\"pq: invalid input syntax for type inet: \\\"%s\\\"\"}"
+	tooManyRequestsResponse       = "{\"data\":\"too many requests\"}"
 
 	limitAttemptsForLogin    = 10
 	limitAttemptsForPassword = 10

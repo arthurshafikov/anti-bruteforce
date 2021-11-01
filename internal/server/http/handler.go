@@ -48,25 +48,25 @@ func NewHandler(app App) *Handler {
 }
 
 func (h *Handler) Home(c *gin.Context) {
-	c.JSON(http.StatusOK, ServerResponse{OkResponseMessage})
+	h.setOkJSONResponse(c)
 }
 
 func (h *Handler) Authorize(c *gin.Context) {
 	var authInput models.AuthorizeInput
 	err := c.ShouldBindJSON(&authInput)
 	if err != nil {
-		c.JSON(http.StatusUnprocessableEntity, ServerResponse{WrongAuthorizeInputErrorMessage})
+		h.setUnprocessableEntityJSONResponse(c, WrongAuthorizeInputErrorMessage)
 		return
 	}
 
 	res := h.App.Authorize(authInput)
 
 	if res {
-		c.JSON(http.StatusOK, ServerResponse{OkResponseMessage})
+		h.setOkJSONResponse(c)
 		return
 	}
 
-	c.JSON(http.StatusTooManyRequests, ServerResponse{TooManyRequestsErrorMessage})
+	h.setJSONResponse(c, http.StatusTooManyRequests, TooManyRequestsErrorMessage)
 }
 
 func (h *Handler) ResetBucket(c *gin.Context) {
@@ -82,11 +82,11 @@ func (h *Handler) AddToWhiteList(c *gin.Context) {
 
 	err = h.App.AddToWhiteList(subnetInput)
 	if err != nil {
-		h.setWrongSubnetErrorMessageResponse(c)
+		h.setUnprocessableEntityJSONResponse(c, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusCreated, ServerResponse{OkResponseMessage})
+	h.setJSONResponse(c, http.StatusCreated, OkResponseMessage)
 }
 
 func (h *Handler) AddToBlackList(c *gin.Context) {
@@ -97,11 +97,11 @@ func (h *Handler) AddToBlackList(c *gin.Context) {
 
 	err = h.App.AddToBlackList(subnetInput)
 	if err != nil {
-		h.setWrongSubnetErrorMessageResponse(c)
+		h.setUnprocessableEntityJSONResponse(c, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusCreated, ServerResponse{OkResponseMessage})
+	h.setJSONResponse(c, http.StatusCreated, OkResponseMessage)
 }
 
 func (h *Handler) RemoveFromWhiteList(c *gin.Context) {
@@ -112,11 +112,11 @@ func (h *Handler) RemoveFromWhiteList(c *gin.Context) {
 
 	err = h.App.RemoveFromWhiteList(subnetInput)
 	if err != nil {
-		h.setWrongSubnetErrorMessageResponse(c)
+		h.setUnprocessableEntityJSONResponse(c, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, ServerResponse{OkResponseMessage})
+	h.setOkJSONResponse(c)
 }
 
 func (h *Handler) RemoveFromBlackList(c *gin.Context) {
@@ -127,26 +127,34 @@ func (h *Handler) RemoveFromBlackList(c *gin.Context) {
 
 	err = h.App.RemoveFromBlackList(subnetInput)
 	if err != nil {
-		h.setWrongSubnetErrorMessageResponse(c)
+		h.setUnprocessableEntityJSONResponse(c, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, ServerResponse{OkResponseMessage})
+	h.setOkJSONResponse(c)
 }
 
 func (h *Handler) getSubnetInput(c *gin.Context) (models.SubnetInput, error) {
 	var subnetInput models.SubnetInput
 	err := c.ShouldBindJSON(&subnetInput)
 	if err != nil {
-		h.setWrongSubnetErrorMessageResponse(c)
+		h.setUnprocessableEntityJSONResponse(c, err.Error())
 		return models.SubnetInput{}, err
 	}
 
 	return subnetInput, nil
 }
 
-func (h *Handler) setWrongSubnetErrorMessageResponse(c *gin.Context) {
-	c.JSON(http.StatusUnprocessableEntity, ServerResponse{
-		Data: WrongSubnetErrorMessage,
+func (h *Handler) setUnprocessableEntityJSONResponse(c *gin.Context, data string) {
+	h.setJSONResponse(c, http.StatusUnprocessableEntity, data)
+}
+
+func (h *Handler) setOkJSONResponse(c *gin.Context) {
+	h.setJSONResponse(c, http.StatusOK, OkResponseMessage)
+}
+
+func (h *Handler) setJSONResponse(c *gin.Context, code int, data string) {
+	c.JSON(code, ServerResponse{
+		Data: data,
 	})
 }

@@ -2,6 +2,7 @@ package tests
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -81,14 +82,15 @@ func (h *appSuiteHandler) TestAddToBlackListAndTryToAuthorize() {
 }
 
 func (h *appSuiteHandler) TestAddToBlackListWrongSubnetFormat() {
+	subnetStr := "asfasfafs"
 	subnet := getJSONBody(h.T(), models.SubnetInput{
-		Subnet: "asfasfafs",
+		Subnet: subnetStr,
 	})
 
 	recorder := h.makeServerHTTPRequest(http.MethodPost, "/blacklist/add", bytes.NewBuffer(subnet))
 	statusCode, body := h.getStatusCodeAndBodyFromRecorder(recorder)
 	require.Equal(h.T(), http.StatusUnprocessableEntity, statusCode)
-	require.Equal(h.T(), wrongSubnetFormatResponse, body)
+	require.Equal(h.T(), fmt.Sprintf(duplicateSubnetResponseFormat, subnetStr), body)
 }
 
 func (h *appSuiteHandler) TestManyIPsTryingToAuthorize() {
