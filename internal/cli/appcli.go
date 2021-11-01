@@ -2,6 +2,7 @@ package cli
 
 import (
 	"context"
+	"time"
 
 	"github.com/thewolf27/anti-bruteforce/internal/server/grpc/api"
 	"github.com/thewolf27/anti-bruteforce/internal/server/grpc/generated"
@@ -9,14 +10,16 @@ import (
 
 type AppCli struct {
 	ctx        context.Context
+	cancel     context.CancelFunc
 	grpcClient generated.AppServiceClient
 }
 
 func NewAppCli(address string) *AppCli {
-	ctx := context.Background()
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 
 	return &AppCli{
 		ctx:        ctx,
+		cancel:     cancel,
 		grpcClient: api.NewGRPCClient(ctx, address),
 	}
 }
@@ -26,6 +29,7 @@ func (app *AppCli) AddToWhiteList(subnet string) error {
 		Subnet: subnet,
 	})
 	if err != nil {
+		app.cancel()
 		return err
 	}
 
@@ -37,6 +41,7 @@ func (app *AppCli) RemoveFromWhiteList(subnet string) error {
 		Subnet: subnet,
 	})
 	if err != nil {
+		app.cancel()
 		return err
 	}
 
@@ -48,6 +53,7 @@ func (app *AppCli) AddToBlackList(subnet string) error {
 		Subnet: subnet,
 	})
 	if err != nil {
+		app.cancel()
 		return err
 	}
 
@@ -59,6 +65,7 @@ func (app *AppCli) RemoveFromBlackList(subnet string) error {
 		Subnet: subnet,
 	})
 	if err != nil {
+		app.cancel()
 		return err
 	}
 
@@ -68,6 +75,7 @@ func (app *AppCli) RemoveFromBlackList(subnet string) error {
 func (app *AppCli) ResetBucket() error {
 	_, err := app.grpcClient.ResetBucket(app.ctx, &generated.EmptyRequest{})
 	if err != nil {
+		app.cancel()
 		return err
 	}
 
