@@ -1,4 +1,6 @@
 BIN := "./bin/app"
+DOCKER_COMPOSE_FILE := "./deployments/docker-compose.yml"
+DOCKER_COMPOSE_TEST_FILE := "./deployments/docker-compose.tests.yml"
 
 GIT_HASH := $(shell git log --format="%h" -n 1)
 LDFLAGS := -X main.release="develop" -X main.buildDate=$(shell date -u +%Y-%m-%dT%H:%M:%S) -X main.gitHash=$(GIT_HASH)
@@ -18,14 +20,14 @@ generate:
 	protoc -I=api --go_out=internal/server/grpc/generated --go-grpc_out=internal/server/grpc/generated api/AppService.proto
 
 up:
-	docker-compose up --build
+	docker-compose -f ${DOCKER_COMPOSE_FILE} up --build
 
 down:
-	docker-compose down --volumes
+	docker-compose -f ${DOCKER_COMPOSE_FILE} down --volumes
 	
 integration-tests:
-	docker-compose -f docker-compose.tests.yml up --build --abort-on-container-exit --exit-code-from integration-tests
-	docker-compose -f docker-compose.tests.yml down --volumes
+	docker-compose -f ${DOCKER_COMPOSE_TEST_FILE} up --build --abort-on-container-exit --exit-code-from integration-tests
+	docker-compose -f ${DOCKER_COMPOSE_TEST_FILE} down --volumes
 
 reset-integration-tests:
-	docker-compose -f docker-compose.tests.yml down --volumes	
+	docker-compose -f ${DOCKER_COMPOSE_TEST_FILE} down --volumes	
