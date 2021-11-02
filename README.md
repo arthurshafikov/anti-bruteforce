@@ -72,8 +72,6 @@ make reset-integration-tests
 make build
 ```
 
-Доступные команды для CLI:
-
 ## Blacklist
 Добавить подсеть в черный список
 ```
@@ -94,8 +92,8 @@ make build
 ./bin/app whitelist rm *SUBNET*
 ```
 
-## Bucket
-Сбросить счётчик bucket для каждого логина/пароля/IP
+## Leaky Bucket
+Сбросить счётчик Leaky Bucket для каждого логина/пароля/IP
 ```
 ./bin/app bucket-reset
 ```
