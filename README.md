@@ -1,105 +1,115 @@
+# Anti-bruteforce
+
 [![Go Report Card](https://goreportcard.com/badge/github.com/thewolf27/anti-bruteforce)](https://goreportcard.com/report/github.com/thewolf27/anti-bruteforce)
 ![Tests](https://github.com/thewolf27/anti-bruteforce/actions/workflows/tests.yml/badge.svg)
 ![License](https://img.shields.io/github/license/thewolf27/anti-bruteforce)
 
+This microservice is intended to fight against ***password brute-force attack***.
 
-# Анти-Брутфорс
+The microservice **architecture** is corresponds to [Golang standarts](https://github.com/golang-standards/project-layout)
 
-Сервис предназначен для борьбы с подбором паролей при авторизации в какой-либо системе.
+Besides, [the Clean Architecture](https://clevercoder.net/2018/09/08/clean-architecture-summary-review/) principles are **applied**, business-logic are separated from database and REST API, so we can easily replace any module on the service.
 
-Архитектура сервиса соответствует [стандартам](https://github.com/golang-standards/project-layout) в Golang среде
+For counting authorization tries for every login/password/IP pair there is a [Leaky Bucket](https://en.wikipedia.org/wiki/Leaky_bucket) algorithm in the app.
 
-Кроме того, соблюдаются принципы [чистой архитектуры](https://habr.com/ru/post/269589/), бизнес правила отделены от базы данных и REST API, упрощая замену модулей в проекте
+The project was done as a final step to complete [Golang Developer. Professional from OTUS](https://otus.ru/lessons/golang-professional/) course
 
-Для учёта количества попыток авторизации каждого login/password/IP в приложении используется алгоритм [Leaky Bucket](https://en.wikipedia.org/wiki/Leaky_bucket)
+## Commands
 
-Полное ТЗ можно посмотреть [здесь](https://github.com/thewolf27/anti-bruteforce/blob/main/docs/tz.md)
+### Docker-compose
 
-Проект был выполнен в рамках обучения языка Golang на курсе [Golang Developer. Professional от OTUS](https://otus.ru/lessons/golang-professional/)
-
-
----
-## Docker-compose
-
-Для поднятия приложения достаточно ввести команду
+Build all containers and run the app
 ```
 make up
 ```
 
-Для остановки и сбрасывания приложения
+Stop all containers with the app.
 ```
 make down
 ```
 
 ---
-## Database
 
-Войти в консоль базы данных 
+### Database
+
+Enter PostgreSQL database console
 ```
 make enterdb
 ```
 
 ---
-## gRPC
 
-Сгенерировать gRPC файлы
+### gRPC
+
+Regenerate gRPC files
 ```
 make generate
 ```
 
 ---
-## Тесты
 
-Запустить юнит тесты
+### Tests
+
+Run unit-tests
 ```
 make test
 ```
 
-Запустить интеграционные тесты
+Run integration-tests
 ```
 make integration-tests
 ```
 
-Сбросить контейнеры интеграционных тестов
+Delete integration-tests containers (if there's some cache and it keeps failing)
 ```
 make reset-integration-tests
 ```
 
-# Command Line Interface
+## Command Line Interface
 
-Для работы с CLI необходимо сбилдить бинарник приложения командой 
+If you want to use CLI you need to build the app binary file 
 ```
 make build
 ```
 
-## Blacklist
-Добавить подсеть в черный список
+### Blacklist
+
+Add subnet to the blacklist
 ```
 ./bin/app blacklist add *SUBNET*
 ```
-Удалить подсеть из черного списка
+
+Remove subnet from the blacklist
 ```
 ./bin/app blacklist rm *SUBNET*
 ```
 
-## Whitelist
-Добавить подсеть в белый список
+### Whitelist
+
+Add subnet to the whitelist
 ```
 ./bin/app whitelist add *SUBNET*
 ```
-Удалить подсеть из белого списка
+
+Remove subnet from the whitelist
 ```
 ./bin/app whitelist rm *SUBNET*
 ```
 
-## Leaky Bucket
-Сбросить счётчик Leaky Bucket для каждого логина/пароля/IP
+---
+
+### Leaky Bucket
+
+Reset Leaky-Bucket counter
 ```
 ./bin/app bucket-reset
 ```
 
-## Server
-Поднять HTTP и GRPC сервера приложения
+---
+
+### Server
+
+Run the app's HTTP and gRPC servers
 ```
 ./bin/app serve --configFolder *CONFIG_FOLDER*
 ```
