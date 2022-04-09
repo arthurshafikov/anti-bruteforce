@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"testing"
 
+	"github.com/arthurshafikov/anti-bruteforce/internal/models"
 	"github.com/stretchr/testify/require"
-	"github.com/thewolf27/anti-bruteforce/internal/models"
 )
 
 var (

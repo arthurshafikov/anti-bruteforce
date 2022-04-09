@@ -9,9 +9,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/arthurshafikov/anti-bruteforce/internal/models"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
-	"github.com/thewolf27/anti-bruteforce/internal/models"
 )
 
 type appSuiteHandler struct {

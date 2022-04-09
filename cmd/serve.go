@@ -1,8 +1,8 @@
 package cmd
 
 import (
+	"github.com/arthurshafikov/anti-bruteforce/internal/launcher"
 	"github.com/spf13/cobra"
-	"github.com/thewolf27/anti-bruteforce/internal/launcher"
 )
 
 func init() {

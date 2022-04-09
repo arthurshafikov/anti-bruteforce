@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/thewolf27/anti-bruteforce/internal/models"
+	"github.com/arthurshafikov/anti-bruteforce/internal/models"
 )
 
 const (

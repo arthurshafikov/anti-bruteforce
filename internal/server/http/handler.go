@@ -3,8 +3,8 @@ package http
 import (
 	"net/http"
 
+	"github.com/arthurshafikov/anti-bruteforce/internal/models"
 	"github.com/gin-gonic/gin"
-	"github.com/thewolf27/anti-bruteforce/internal/models"
 )
 
 const (

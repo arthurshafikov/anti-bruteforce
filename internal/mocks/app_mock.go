@@ -1,6 +1,6 @@
 package mocks
 
-import "github.com/thewolf27/anti-bruteforce/internal/models"
+import "github.com/arthurshafikov/anti-bruteforce/internal/models"
 
 type App struct{}
 

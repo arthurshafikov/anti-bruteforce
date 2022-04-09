@@ -7,10 +7,10 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/arthurshafikov/anti-bruteforce/internal/mocks"
+	"github.com/arthurshafikov/anti-bruteforce/internal/models"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/require"
-	"github.com/thewolf27/anti-bruteforce/internal/mocks"
-	"github.com/thewolf27/anti-bruteforce/internal/models"
 )
 
 func TestAuthorize(t *testing.T) {

@@ -1,6 +1,6 @@
 package main
 
-import "github.com/thewolf27/anti-bruteforce/cmd"
+import "github.com/arthurshafikov/anti-bruteforce/cmd"
 
 func main() {
 	cmd.Execute()

@@ -3,8 +3,8 @@ package api
 import (
 	"context"
 
-	"github.com/thewolf27/anti-bruteforce/internal/models"
-	"github.com/thewolf27/anti-bruteforce/internal/server/grpc/generated"
+	"github.com/arthurshafikov/anti-bruteforce/internal/models"
+	"github.com/arthurshafikov/anti-bruteforce/internal/server/grpc/generated"
 )
 
 type App interface {

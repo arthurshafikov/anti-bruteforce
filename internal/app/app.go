@@ -3,7 +3,7 @@ package app
 import (
 	"context"
 
-	"github.com/thewolf27/anti-bruteforce/internal/models"
+	"github.com/arthurshafikov/anti-bruteforce/internal/models"
 )
 
 type Storage interface {

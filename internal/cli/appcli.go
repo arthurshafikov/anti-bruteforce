@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/thewolf27/anti-bruteforce/internal/server/grpc/api"
-	"github.com/thewolf27/anti-bruteforce/internal/server/grpc/generated"
+	"github.com/arthurshafikov/anti-bruteforce/internal/server/grpc/api"
+	"github.com/arthurshafikov/anti-bruteforce/internal/server/grpc/generated"
 )
 
 type AppCli struct {

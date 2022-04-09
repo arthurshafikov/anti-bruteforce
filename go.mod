@@ -1,4 +1,4 @@
-module github.com/thewolf27/anti-bruteforce
+module github.com/arthurshafikov/anti-bruteforce
 
 go 1.17
 

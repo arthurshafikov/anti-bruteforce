@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/arthurshafikov/anti-bruteforce/internal/cli"
+	configPkg "github.com/arthurshafikov/anti-bruteforce/internal/config"
 	"github.com/spf13/cobra"
-	"github.com/thewolf27/anti-bruteforce/internal/cli"
-	configPkg "github.com/thewolf27/anti-bruteforce/internal/config"
 )
 
 var (

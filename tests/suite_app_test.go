@@ -4,14 +4,14 @@ import (
 	"context"
 	"os"
 
+	"github.com/arthurshafikov/anti-bruteforce/internal/app"
+	"github.com/arthurshafikov/anti-bruteforce/internal/bucket"
+	"github.com/arthurshafikov/anti-bruteforce/internal/models"
+	"github.com/arthurshafikov/anti-bruteforce/internal/server/http"
+	"github.com/arthurshafikov/anti-bruteforce/internal/storage"
+	"github.com/arthurshafikov/anti-bruteforce/pkg/logger"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/suite"
-	"github.com/thewolf27/anti-bruteforce/internal/app"
-	"github.com/thewolf27/anti-bruteforce/internal/bucket"
-	"github.com/thewolf27/anti-bruteforce/internal/models"
-	"github.com/thewolf27/anti-bruteforce/internal/server/http"
-	"github.com/thewolf27/anti-bruteforce/internal/storage"
-	"github.com/thewolf27/anti-bruteforce/pkg/logger"
 )
 
 type AppSuite struct {

@@ -5,14 +5,14 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/thewolf27/anti-bruteforce/internal/app"
-	"github.com/thewolf27/anti-bruteforce/internal/bucket"
-	"github.com/thewolf27/anti-bruteforce/internal/config"
-	"github.com/thewolf27/anti-bruteforce/internal/models"
-	grcpapi "github.com/thewolf27/anti-bruteforce/internal/server/grpc/api"
-	"github.com/thewolf27/anti-bruteforce/internal/server/http"
-	"github.com/thewolf27/anti-bruteforce/internal/storage"
-	"github.com/thewolf27/anti-bruteforce/pkg/logger"
+	"github.com/arthurshafikov/anti-bruteforce/internal/app"
+	"github.com/arthurshafikov/anti-bruteforce/internal/bucket"
+	"github.com/arthurshafikov/anti-bruteforce/internal/config"
+	"github.com/arthurshafikov/anti-bruteforce/internal/models"
+	grcpapi "github.com/arthurshafikov/anti-bruteforce/internal/server/grpc/api"
+	"github.com/arthurshafikov/anti-bruteforce/internal/server/http"
+	"github.com/arthurshafikov/anti-bruteforce/internal/storage"
+	"github.com/arthurshafikov/anti-bruteforce/pkg/logger"
 )
 
 func Run(config *config.Config) {
