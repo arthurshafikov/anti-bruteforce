@@ -1,12 +1,12 @@
 # Anti-bruteforce
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/thewolf27/anti-bruteforce)](https://goreportcard.com/report/github.com/thewolf27/anti-bruteforce)
-![Tests](https://github.com/thewolf27/anti-bruteforce/actions/workflows/tests.yml/badge.svg)
-![License](https://img.shields.io/github/license/thewolf27/anti-bruteforce)
+![Tests](https://github.com/arthurshafikov/anti-bruteforce/actions/workflows/tests.yml/badge.svg)
+![License](https://img.shields.io/github/license/arthurshafikov/anti-bruteforce)
 
 This microservice is intended to fight against ***password brute-force attack***.
 
-The microservice **architecture** is corresponds to [Golang standarts](https://github.com/golang-standards/project-layout)
+The microservice **architecture** corresponds to [Golang standarts](https://github.com/golang-standards/project-layout)
 
 Besides, [the Clean Architecture](https://clevercoder.net/2018/09/08/clean-architecture-summary-review/) principles are **applied**, business-logic are separated from database and REST API, so we can easily replace any module on the service.
 
