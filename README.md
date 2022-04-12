@@ -1,6 +1,6 @@
 # Anti-bruteforce
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/thewolf27/anti-bruteforce)](https://goreportcard.com/report/github.com/thewolf27/anti-bruteforce)
+[![Go Report Card](https://goreportcard.com/badge/github.com/arthurshafikov/anti-bruteforce)](https://goreportcard.com/report/github.com/arthurshafikov/anti-bruteforce)
 ![Tests](https://github.com/arthurshafikov/anti-bruteforce/actions/workflows/tests.yml/badge.svg)
 ![License](https://img.shields.io/github/license/arthurshafikov/anti-bruteforce)
 
