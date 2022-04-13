@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/jmoiron/sqlx"
-	_ "github.com/lib/pq" //nolint:gci
+	_ "github.com/lib/pq" //nolint
 )
 
 const (
