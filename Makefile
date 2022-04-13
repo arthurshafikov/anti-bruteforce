@@ -1,6 +1,7 @@
 BIN := "./bin/app"
 DOCKER_COMPOSE_FILE := "./deployments/docker-compose.yml"
 DOCKER_COMPOSE_TEST_FILE := "./deployments/docker-compose.tests.yml"
+APP_TEST_NAME="anti_bruteforce_test"
 
 GIT_HASH := $(shell git log --format="%h" -n 1)
 LDFLAGS := -X main.release="develop" -X main.buildDate=$(shell date -u +%Y-%m-%dT%H:%M:%S) -X main.gitHash=$(GIT_HASH)
@@ -26,8 +27,8 @@ down:
 	docker-compose -f ${DOCKER_COMPOSE_FILE} down --volumes
 	
 integration-tests:
-	docker-compose -f ${DOCKER_COMPOSE_TEST_FILE} up --build --abort-on-container-exit --exit-code-from integration-tests
-	docker-compose -f ${DOCKER_COMPOSE_TEST_FILE} down --volumes
+	docker-compose -f ${DOCKER_COMPOSE_TEST_FILE}  -p ${APP_TEST_NAME} --env-file ./deployments/.env.testing up --build --abort-on-container-exit --exit-code-from integration
+	docker-compose -f ${DOCKER_COMPOSE_TEST_FILE}  -p ${APP_TEST_NAME} down --volumes
 
 reset-integration-tests:
-	docker-compose -f ${DOCKER_COMPOSE_TEST_FILE} down --volumes	
+	docker-compose -f ${DOCKER_COMPOSE_TEST_FILE}  -p ${APP_TEST_NAME} down --volumes	
