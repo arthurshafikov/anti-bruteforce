@@ -6,15 +6,15 @@ import (
 )
 
 type Blacklist interface {
-	AddToBlacklist(string) error
-	RemoveFromBlacklist(string) error
-	CheckIfIPInBlacklist(string) (bool, error)
+	AddToBlacklist(subnet string) error
+	RemoveFromBlacklist(subnet string) error
+	CheckIfIPInBlacklist(ip string) (bool, error)
 }
 
 type Whitelist interface {
-	AddToWhitelist(string) error
-	RemoveFromWhitelist(string) error
-	CheckIfIPInWhitelist(string) (bool, error)
+	AddToWhitelist(subnet string) error
+	RemoveFromWhitelist(subnet string) error
+	CheckIfIPInWhitelist(ip string) (bool, error)
 }
 
 type Repository struct {
