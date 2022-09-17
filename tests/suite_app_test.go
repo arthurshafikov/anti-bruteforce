@@ -9,10 +9,10 @@ import (
 
 	"github.com/arthurshafikov/anti-bruteforce/internal/bucket"
 	"github.com/arthurshafikov/anti-bruteforce/internal/core"
+	"github.com/arthurshafikov/anti-bruteforce/internal/logger"
 	"github.com/arthurshafikov/anti-bruteforce/internal/repository"
 	"github.com/arthurshafikov/anti-bruteforce/internal/services"
 	"github.com/arthurshafikov/anti-bruteforce/internal/transport/http"
-	"github.com/arthurshafikov/anti-bruteforce/pkg/logger"
 	"github.com/arthurshafikov/anti-bruteforce/pkg/postgres"
 	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"

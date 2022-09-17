@@ -1,28 +1,35 @@
 package logger
 
 import (
+	"os"
+
 	"github.com/sirupsen/logrus"
 )
 
-type Logger struct{}
+type Logger struct {
+	logrus *logrus.Logger
+}
 
 func NewLogger(logLevel string) *Logger {
-	logrus.SetLevel(getLogLevelFromString(logLevel))
-	logrus.SetFormatter(&logrus.JSONFormatter{})
+	log := logrus.New()
+	log.Out = os.Stdout
+	log.SetLevel(getLogLevelFromString(logLevel))
 
-	return &Logger{}
+	return &Logger{
+		logrus: log,
+	}
 }
 
 func (l *Logger) Info(msg string) {
-	logrus.Info(msg)
+	l.logrus.Info(msg)
 }
 
 func (l *Logger) Warn(msg string) {
-	logrus.Warn(msg)
+	l.logrus.Warn(msg)
 }
 
-func (l *Logger) Error(msg string) {
-	logrus.Error(msg)
+func (l *Logger) Error(err error) {
+	l.logrus.Error(err)
 }
 
 func getLogLevelFromString(logLevel string) logrus.Level {

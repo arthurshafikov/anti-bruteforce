@@ -6,9 +6,7 @@ import (
 )
 
 type Logger interface {
-	Warn(string)
-	Info(string)
-	Error(string)
+	Error(err error)
 }
 
 type LeakyBucket interface {

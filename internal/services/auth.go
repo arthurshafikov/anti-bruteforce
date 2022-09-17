@@ -26,7 +26,7 @@ func NewAuthService(
 func (as *AuthService) Authorize(input core.AuthorizeInput) bool {
 	res, err := as.blacklistService.CheckIfIPInBlacklist(input.IP)
 	if err != nil {
-		as.logger.Error(err.Error())
+		as.logger.Error(err)
 		return false
 	}
 	if res {
@@ -35,7 +35,7 @@ func (as *AuthService) Authorize(input core.AuthorizeInput) bool {
 
 	res, err = as.whitelistService.CheckIfIPInWhitelist(input.IP)
 	if err != nil {
-		as.logger.Error(err.Error())
+		as.logger.Error(err)
 		return false
 	}
 	if res {

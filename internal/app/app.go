@@ -9,11 +9,11 @@ import (
 	"github.com/arthurshafikov/anti-bruteforce/internal/bucket"
 	"github.com/arthurshafikov/anti-bruteforce/internal/config"
 	"github.com/arthurshafikov/anti-bruteforce/internal/core"
+	"github.com/arthurshafikov/anti-bruteforce/internal/logger"
 	"github.com/arthurshafikov/anti-bruteforce/internal/repository"
 	"github.com/arthurshafikov/anti-bruteforce/internal/services"
 	grcpapi "github.com/arthurshafikov/anti-bruteforce/internal/transport/grpc/api"
 	"github.com/arthurshafikov/anti-bruteforce/internal/transport/http"
-	"github.com/arthurshafikov/anti-bruteforce/pkg/logger"
 	"github.com/arthurshafikov/anti-bruteforce/pkg/postgres"
 	"golang.org/x/sync/errgroup"
 )
@@ -27,7 +27,7 @@ func Run(config *config.Config) {
 	group, ctx := errgroup.WithContext(ctx)
 	defer func() {
 		if err := group.Wait(); err != nil {
-			logger.Error(err.Error())
+			logger.Error(err)
 		}
 	}()
 
