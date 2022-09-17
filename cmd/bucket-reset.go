@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/spf13/cobra"
 )
@@ -18,7 +19,7 @@ var bucketResetCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		err := appCli.ResetBucket()
 		if err != nil {
-			echoErrorAndExit(err)
+			log.Fatalln(err)
 		}
 
 		fmt.Println("Bucket was resetted successfully!")

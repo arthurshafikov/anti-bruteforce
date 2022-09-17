@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/spf13/cobra"
 )
@@ -26,7 +27,7 @@ var whitelistAdd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		err := appCli.AddToWhitelist(args[0])
 		if err != nil {
-			echoErrorAndExit(err)
+			log.Fatalln(err)
 		}
 
 		fmt.Printf("Subnet %s was added to the whitelist\n", args[0])
@@ -41,7 +42,7 @@ var whitelistRemove = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		err := appCli.RemoveFromWhitelist(args[0])
 		if err != nil {
-			echoErrorAndExit(err)
+			log.Fatalln(err)
 		}
 
 		fmt.Printf("Subnet %s was removed from the whitelist\n", args[0])

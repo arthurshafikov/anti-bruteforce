@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/spf13/cobra"
 )
@@ -26,7 +27,7 @@ var blacklistAdd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		err := appCli.AddToBlacklist(args[0])
 		if err != nil {
-			echoErrorAndExit(err)
+			log.Fatalln(err)
 		}
 
 		fmt.Printf("Subnet %s was added to the blacklist\n", args[0])
@@ -41,7 +42,7 @@ var blacklistRemove = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		err := appCli.RemoveFromBlacklist(args[0])
 		if err != nil {
-			echoErrorAndExit(err)
+			log.Fatalln(err)
 		}
 
 		fmt.Printf("Subnet %s was removed from the blacklist\n", args[0])

@@ -1,9 +1,6 @@
 package cmd
 
 import (
-	"fmt"
-	"os"
-
 	"github.com/arthurshafikov/anti-bruteforce/internal/cli"
 	configPkg "github.com/arthurshafikov/anti-bruteforce/internal/config"
 	"github.com/spf13/cobra"
@@ -36,9 +33,4 @@ func initConfig() {
 
 func initGRPCClient() {
 	appCli = cli.NewAppCli(config.GrpcServerConfig.Address)
-}
-
-func echoErrorAndExit(err error) {
-	fmt.Println(err)
-	os.Exit(1)
 }
