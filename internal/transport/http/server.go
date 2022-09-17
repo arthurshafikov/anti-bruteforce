@@ -11,7 +11,7 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-type ServerHandler interface {
+type Handler interface {
 	Home(*gin.Context)
 	Authorize(*gin.Context)
 	ResetBucket(*gin.Context)
@@ -24,10 +24,10 @@ type ServerHandler interface {
 type Server struct {
 	httpSrv *http.Server
 	Engine  *gin.Engine
-	handler ServerHandler
+	handler Handler
 }
 
-func NewServer(handler ServerHandler) *Server {
+func NewServer(handler Handler) *Server {
 	return &Server{
 		Engine:  gin.Default(),
 		handler: handler,

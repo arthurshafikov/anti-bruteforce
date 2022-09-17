@@ -14,6 +14,7 @@ import (
 	"github.com/arthurshafikov/anti-bruteforce/internal/services"
 	grcpapi "github.com/arthurshafikov/anti-bruteforce/internal/transport/grpc/api"
 	"github.com/arthurshafikov/anti-bruteforce/internal/transport/http"
+	"github.com/arthurshafikov/anti-bruteforce/internal/transport/http/handler"
 	"github.com/arthurshafikov/anti-bruteforce/pkg/postgres"
 	"golang.org/x/sync/errgroup"
 )
@@ -61,7 +62,7 @@ func Run(config *config.Config) {
 
 	grcpapi.RunGrpcServer(ctx, group, config.GrpcServerConfig.Address, services)
 
-	handler := http.NewHandler(services)
+	handler := handler.NewHandler(services)
 
 	http.NewServer(handler).Serve(ctx, group, config.ServerConfig.Address)
 }

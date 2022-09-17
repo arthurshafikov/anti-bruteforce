@@ -13,6 +13,7 @@ import (
 	"github.com/arthurshafikov/anti-bruteforce/internal/repository"
 	"github.com/arthurshafikov/anti-bruteforce/internal/services"
 	"github.com/arthurshafikov/anti-bruteforce/internal/transport/http"
+	"github.com/arthurshafikov/anti-bruteforce/internal/transport/http/handler"
 	"github.com/arthurshafikov/anti-bruteforce/pkg/postgres"
 	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
@@ -61,7 +62,7 @@ func (appS *AppSuite) SetupSuite() {
 		LeakyBucket: bucket,
 		Repository:  repository,
 	})
-	handler := http.NewHandler(appS.Services)
+	handler := handler.NewHandler(appS.Services)
 
 	server := http.NewServer(handler)
 	server.InitRoutes()
