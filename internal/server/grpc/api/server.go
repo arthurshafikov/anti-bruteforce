@@ -6,10 +6,11 @@ import (
 	"net"
 
 	"github.com/arthurshafikov/anti-bruteforce/internal/server/grpc/generated"
+	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
 )
 
-func RunGrpcServer(ctx context.Context, address string, app App) {
+func RunGrpcServer(ctx context.Context, g *errgroup.Group, address string, app App) {
 	lis, err := net.Listen("tcp", address)
 	if err != nil {
 		log.Fatalln(err)
@@ -21,12 +22,15 @@ func RunGrpcServer(ctx context.Context, address string, app App) {
 	grpcServer := grpc.NewServer()
 	generated.RegisterAppServiceServer(grpcServer, &a)
 
-	go func() {
+	g.Go(func() error {
 		<-ctx.Done()
-		grpcServer.Stop()
-	}()
 
-	if err := grpcServer.Serve(lis); err != nil {
-		log.Fatalln(err)
-	}
+		grpcServer.GracefulStop()
+
+		return nil
+	})
+
+	g.Go(func() error {
+		return grpcServer.Serve(lis)
+	})
 }

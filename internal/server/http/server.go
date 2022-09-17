@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"golang.org/x/sync/errgroup"
 )
 
 type ServerHandler interface {
@@ -22,44 +23,43 @@ type ServerHandler interface {
 
 type Server struct {
 	httpSrv *http.Server
-	address string
 	Engine  *gin.Engine
 	handler ServerHandler
 }
 
-func NewServer(address string, handler ServerHandler) *Server {
+func NewServer(handler ServerHandler) *Server {
 	return &Server{
-		address: address,
 		Engine:  gin.Default(),
 		handler: handler,
 	}
 }
 
-func (s *Server) Serve(ctx context.Context) {
+func (s *Server) Serve(ctx context.Context, g *errgroup.Group, address string) {
 	s.InitRoutes()
 
 	s.httpSrv = &http.Server{
-		Addr:    s.address,
+		Addr:    address,
 		Handler: s.Engine,
 	}
 
-	go s.shutdownOnContextDone(ctx)
+	g.Go(func() error {
+		<-ctx.Done()
+
+		return s.shutdown()
+	})
 
 	if err := s.httpSrv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		log.Println("Could not start listener ", err)
 	}
 }
 
-func (s *Server) shutdownOnContextDone(ctx context.Context) {
-	<-ctx.Done()
-
+func (s *Server) shutdown() error {
 	log.Println("Shutdown Server ...")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	if err := s.httpSrv.Shutdown(ctx); err != nil {
-		log.Println("Server forced to shutdown: ", err)
-	}
-	cancel()
+	defer cancel()
+
+	return s.httpSrv.Shutdown(ctx)
 }
 
 func (s *Server) InitRoutes() {

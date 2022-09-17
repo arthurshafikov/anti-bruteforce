@@ -1,7 +1,6 @@
 package bucket
 
 import (
-	"context"
 	"sync"
 	"testing"
 
@@ -60,7 +59,7 @@ func TestConcurrentAddLogin(t *testing.T) {
 }
 
 func getLeakyBucketWithLimits(limitLogin, limitPass, limitIP int64) *LeakyBucket {
-	return NewLeakyBucket(context.Background(), core.AuthorizeLimits{
+	return NewLeakyBucket(nil, core.AuthorizeLimits{
 		LimitAttemptsForLogin:    limitLogin,
 		LimitAttemptsForPassword: limitPass,
 		LimitAttemptsForIP:       limitIP,

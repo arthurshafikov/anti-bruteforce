@@ -13,7 +13,6 @@ type Logger interface {
 
 type LeakyBucket interface {
 	Add(core.AuthorizeInput) bool
-	Leak()
 	ResetResetBucketTicker()
 }
 

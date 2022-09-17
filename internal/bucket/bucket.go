@@ -9,10 +9,9 @@ import (
 )
 
 const (
-	resetBucketInterval = time.Second * 60
-	loginBucketKey      = "login"
-	passwordBucketKey   = "password"
-	ipBucketKey         = "ip"
+	loginBucketKey    = "login"
+	passwordBucketKey = "password"
+	ipBucketKey       = "ip"
 )
 
 type bucketValuesMap map[string]int64
@@ -26,18 +25,11 @@ type bucket struct {
 type bucketsMap map[string]bucket
 
 type LeakyBucket struct {
-	ctx                context.Context
 	buckets            bucketsMap
 	resetBucketsTicker *time.Ticker
 }
 
-func NewLeakyBucket(ctx context.Context, authLimits core.AuthorizeLimits) *LeakyBucket {
-	resetBucketsTicker := time.NewTicker(resetBucketInterval)
-	go func() {
-		<-ctx.Done()
-		resetBucketsTicker.Stop()
-	}()
-
+func NewLeakyBucket(resetBucketsTicker *time.Ticker, authLimits core.AuthorizeLimits) *LeakyBucket {
 	buckets := bucketsMap{
 		loginBucketKey: bucket{
 			mu:        &sync.Mutex{},
@@ -57,7 +49,6 @@ func NewLeakyBucket(ctx context.Context, authLimits core.AuthorizeLimits) *Leaky
 	}
 
 	return &LeakyBucket{
-		ctx:                ctx,
 		buckets:            buckets,
 		resetBucketsTicker: resetBucketsTicker,
 	}
@@ -96,7 +87,7 @@ func (lb *LeakyBucket) addInBucket(bucketName, value string) bool {
 }
 
 func (lb *LeakyBucket) ResetResetBucketTicker() {
-	lb.resetBucketsTicker.Reset(resetBucketInterval)
+	lb.resetBucketsTicker.Reset(time.Second)
 	lb.resetBucket()
 }
 
@@ -110,10 +101,10 @@ func (lb *LeakyBucket) resetBucket() {
 	}
 }
 
-func (lb *LeakyBucket) Leak() {
+func (lb *LeakyBucket) Leak(ctx context.Context) {
 	for range lb.resetBucketsTicker.C {
 		select {
-		case <-lb.ctx.Done():
+		case <-ctx.Done():
 			return
 		default:
 		}

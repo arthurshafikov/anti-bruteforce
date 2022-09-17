@@ -4,6 +4,7 @@ import (
 	"context"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/arthurshafikov/anti-bruteforce/internal/bucket"
 	"github.com/arthurshafikov/anti-bruteforce/internal/config"
@@ -18,21 +19,36 @@ import (
 )
 
 func Run(config *config.Config) {
+	logger := logger.NewLogger(config.LoggerConfig.Level)
+
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
 	defer cancel()
-	group, ctx := errgroup.WithContext(ctx)
 
-	logger := logger.NewLogger(config.LoggerConfig.Level)
+	group, ctx := errgroup.WithContext(ctx)
+	defer func() {
+		if err := group.Wait(); err != nil {
+			logger.Error(err.Error())
+		}
+	}()
+
 	db := postgres.NewSqlxDB(ctx, group, config.DatabaseConfig.DSN)
 	repository := repository.NewRepository(db)
 
-	bucket := bucket.NewLeakyBucket(ctx, core.AuthorizeLimits{
+	resetBucketsTicker := time.NewTicker(time.Second * 60) // todo config
+	group.Go(func() error {
+		<-ctx.Done()
+		resetBucketsTicker.Stop()
+
+		return nil
+	})
+	bucket := bucket.NewLeakyBucket(resetBucketsTicker, core.AuthorizeLimits{
 		LimitAttemptsForLogin:    config.NumberOfAttemptsForLogin,
 		LimitAttemptsForPassword: config.NumberOfAttemptsForPassword,
 		LimitAttemptsForIP:       config.NumberOfAttemptsForIP,
 	})
+	defer bucket.ResetResetBucketTicker()
 	group.Go(func() error {
-		bucket.Leak()
+		bucket.Leak(ctx)
 
 		return nil
 	})
@@ -43,18 +59,9 @@ func Run(config *config.Config) {
 		Repository:  repository,
 	})
 
-	group.Go(func() error {
-		grcpapi.RunGrpcServer(ctx, config.GrpcServerConfig.Address, services)
-
-		return nil
-	})
+	grcpapi.RunGrpcServer(ctx, group, config.GrpcServerConfig.Address, services)
 
 	handler := http.NewHandler(services)
 
-	server := http.NewServer(config.ServerConfig.Address, handler)
-	server.Serve(ctx)
-
-	if err := group.Wait(); err != nil {
-		logger.Error(err.Error())
-	}
+	http.NewServer(handler).Serve(ctx, group, config.ServerConfig.Address)
 }

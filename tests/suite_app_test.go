@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/arthurshafikov/anti-bruteforce/internal/bucket"
 	"github.com/arthurshafikov/anti-bruteforce/internal/core"
@@ -35,10 +36,22 @@ func (appS *AppSuite) SetupSuite() {
 
 	logger := logger.NewLogger("DEBUG")
 
-	bucket := bucket.NewLeakyBucket(ctx, core.AuthorizeLimits{
+	resetBucketsTicker := time.NewTicker(time.Second * 60) // todo config
+	group.Go(func() error {
+		<-ctx.Done()
+		resetBucketsTicker.Stop()
+
+		return nil
+	})
+	bucket := bucket.NewLeakyBucket(resetBucketsTicker, core.AuthorizeLimits{
 		LimitAttemptsForLogin:    int64(limitAttemptsForLogin),
 		LimitAttemptsForPassword: int64(limitAttemptsForPassword),
 		LimitAttemptsForIP:       int64(limitAttemptsForIP),
+	})
+	group.Go(func() error {
+		bucket.Leak(ctx)
+
+		return nil
 	})
 
 	appS.DB = postgres.NewSqlxDB(ctx, group, os.Getenv("DSN"))
@@ -50,7 +63,7 @@ func (appS *AppSuite) SetupSuite() {
 	})
 	handler := http.NewHandler(appS.Services)
 
-	server := http.NewServer(":8999", handler)
+	server := http.NewServer(handler)
 	server.InitRoutes()
 	appS.ServerEngine = server.Engine
 }
