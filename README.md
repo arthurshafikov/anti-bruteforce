@@ -65,6 +65,14 @@ Delete integration-tests containers (if there's some cache and it keeps failing)
 make reset-integration-tests
 ```
 
+---
+## Linters
+
+Run linters (you have to have golangci-lint installed on your PC)
+```
+make lint
+```
+
 ## Command Line Interface
 
 If you want to use CLI you need to build the app binary file 
