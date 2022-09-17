@@ -4,17 +4,8 @@ import (
 	"context"
 
 	"github.com/arthurshafikov/anti-bruteforce/internal/core"
+	"github.com/arthurshafikov/anti-bruteforce/internal/repository"
 )
-
-type Storage interface {
-	AddToWhitelist(string) error
-	AddToBlacklist(string) error
-	RemoveFromWhitelist(string) error
-	RemoveFromBlacklist(string) error
-	CheckIfIPInWhitelist(string) (bool, error)
-	CheckIfIPInBlacklist(string) (bool, error)
-	ResetDatabase() error
-}
 
 type Logger interface {
 	Warn(string)
@@ -30,22 +21,22 @@ type LeakyBucket interface {
 
 type App struct {
 	Logger      Logger
-	Storage     Storage
+	Repository  *repository.Repository
 	LeakyBucket LeakyBucket
 }
 
-func NewApp(ctx context.Context, logger Logger, storage Storage, bucket LeakyBucket) *App {
+func NewApp(ctx context.Context, logger Logger, repository *repository.Repository, bucket LeakyBucket) *App {
 	go bucket.Leak()
 
 	return &App{
 		Logger:      logger,
-		Storage:     storage,
+		Repository:  repository,
 		LeakyBucket: bucket,
 	}
 }
 
 func (app *App) Authorize(input core.AuthorizeInput) bool {
-	res, err := app.Storage.CheckIfIPInBlacklist(input.IP)
+	res, err := app.Repository.Blacklist.CheckIfIPInBlacklist(input.IP)
 	if err != nil {
 		app.Logger.Error(err.Error())
 		return false
@@ -54,7 +45,7 @@ func (app *App) Authorize(input core.AuthorizeInput) bool {
 		return false
 	}
 
-	res, err = app.Storage.CheckIfIPInWhitelist(input.IP)
+	res, err = app.Repository.Whitelist.CheckIfIPInWhitelist(input.IP)
 	if err != nil {
 		app.Logger.Error(err.Error())
 		return false
@@ -71,7 +62,7 @@ func (app *App) ResetBucket() {
 }
 
 func (app *App) AddToWhitelist(subnetInput core.SubnetInput) error {
-	err := app.Storage.AddToWhitelist(subnetInput.Subnet)
+	err := app.Repository.Whitelist.AddToWhitelist(subnetInput.Subnet)
 	if err != nil {
 		return err
 	}
@@ -80,7 +71,7 @@ func (app *App) AddToWhitelist(subnetInput core.SubnetInput) error {
 }
 
 func (app *App) AddToBlacklist(subnetInput core.SubnetInput) error {
-	err := app.Storage.AddToBlacklist(subnetInput.Subnet)
+	err := app.Repository.Blacklist.AddToBlacklist(subnetInput.Subnet)
 	if err != nil {
 		return err
 	}
@@ -89,7 +80,7 @@ func (app *App) AddToBlacklist(subnetInput core.SubnetInput) error {
 }
 
 func (app *App) RemoveFromWhitelist(subnetInput core.SubnetInput) error {
-	err := app.Storage.RemoveFromWhitelist(subnetInput.Subnet)
+	err := app.Repository.Whitelist.RemoveFromWhitelist(subnetInput.Subnet)
 	if err != nil {
 		return err
 	}
@@ -98,7 +89,7 @@ func (app *App) RemoveFromWhitelist(subnetInput core.SubnetInput) error {
 }
 
 func (app *App) RemoveFromBlacklist(subnetInput core.SubnetInput) error {
-	err := app.Storage.RemoveFromBlacklist(subnetInput.Subnet)
+	err := app.Repository.Blacklist.RemoveFromBlacklist(subnetInput.Subnet)
 	if err != nil {
 		return err
 	}
