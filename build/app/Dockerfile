@@ -1,4 +1,4 @@
-FROM golang:1.16.2 as build
+FROM golang:1.17 as build
 
 ENV BIN_FILE /opt/app/app
 ENV CODE_DIR /go/src/
