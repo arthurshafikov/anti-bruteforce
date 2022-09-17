@@ -46,9 +46,7 @@ func (w *Whitelist) CheckIfIPInWhitelist(ip string) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	if n, _ := res.RowsAffected(); n > 0 {
-		return true, nil
-	}
+	n, _ := res.RowsAffected()
 
-	return false, nil
+	return n > 0, nil
 }
