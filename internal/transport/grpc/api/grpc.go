@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/arthurshafikov/anti-bruteforce/internal/core"
-	"github.com/arthurshafikov/anti-bruteforce/internal/server/grpc/generated"
+	"github.com/arthurshafikov/anti-bruteforce/internal/transport/grpc/generated"
 )
 
 type App interface {

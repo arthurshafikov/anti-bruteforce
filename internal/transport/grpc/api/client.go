@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	"github.com/arthurshafikov/anti-bruteforce/internal/server/grpc/generated"
+	"github.com/arthurshafikov/anti-bruteforce/internal/transport/grpc/generated"
 	"google.golang.org/grpc"
 )
 

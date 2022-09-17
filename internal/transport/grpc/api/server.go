@@ -5,7 +5,7 @@ import (
 	"log"
 	"net"
 
-	"github.com/arthurshafikov/anti-bruteforce/internal/server/grpc/generated"
+	"github.com/arthurshafikov/anti-bruteforce/internal/transport/grpc/generated"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
 )
