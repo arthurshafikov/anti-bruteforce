@@ -9,6 +9,9 @@ LDFLAGS := -X main.release="develop" -X main.buildDate=$(shell date -u +%Y-%m-%d
 build:
 	go build -a -o $(BIN) -ldflags "$(LDFLAGS)" main.go
 
+run: build 
+	${BIN} serve
+
 test: 
 	go test --short -race ./internal/... ./pkg/...
 
@@ -24,7 +27,7 @@ generate:
 	protoc -I=api --go_out=internal/server/grpc/generated --go-grpc_out=internal/server/grpc/generated api/AppService.proto
 
 up:
-	docker-compose -f ${DOCKER_COMPOSE_FILE} up --build
+	docker-compose -f ${DOCKER_COMPOSE_FILE} up -d --build
 
 down:
 	docker-compose -f ${DOCKER_COMPOSE_FILE} down --volumes

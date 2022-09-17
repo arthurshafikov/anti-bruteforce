@@ -2,7 +2,6 @@ package config
 
 import (
 	"log"
-	"os"
 
 	"github.com/spf13/viper"
 )
@@ -12,7 +11,7 @@ type Config struct {
 	LoggerConfig
 	ServerConfig
 	GrpcServerConfig ServerConfig
-	StorageConfig
+	DatabaseConfig
 }
 
 type AppConfig struct {
@@ -30,8 +29,8 @@ type ServerConfig struct {
 	Address string
 }
 
-type StorageConfig struct {
-	Dsn string
+type DatabaseConfig struct {
+	DSN string
 }
 
 func NewConfig(configFolder string) *Config {
@@ -45,8 +44,6 @@ func NewConfig(configFolder string) *Config {
 	if err := viper.Unmarshal(&config); err != nil {
 		log.Fatalln(err)
 	}
-
-	config.StorageConfig.Dsn = os.Getenv("DSN")
 
 	return &config
 }

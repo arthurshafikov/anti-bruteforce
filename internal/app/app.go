@@ -23,7 +23,7 @@ func Run(config *config.Config) {
 	group, ctx := errgroup.WithContext(ctx)
 
 	logger := logger.NewLogger(config.LoggerConfig.Level)
-	db := postgres.NewSqlxDB(ctx, group, config.StorageConfig.Dsn)
+	db := postgres.NewSqlxDB(ctx, group, config.DatabaseConfig.DSN)
 	repository := repository.NewRepository(db)
 
 	bucket := bucket.NewLeakyBucket(ctx, core.AuthorizeLimits{

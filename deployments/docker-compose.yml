@@ -9,7 +9,6 @@ services:
     restart: on-failure
     environment:
       WAIT_HOSTS: db:5432
-      DSN: ${DSN}
     ports: 
       - ${APP_HTTP_PORT}:8123
       - ${APP_GRPC_PORT}:8765
