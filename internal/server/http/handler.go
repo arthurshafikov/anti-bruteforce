@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/arthurshafikov/anti-bruteforce/internal/core"
+	"github.com/arthurshafikov/anti-bruteforce/internal/services"
 	"github.com/gin-gonic/gin"
 )
 
@@ -28,22 +29,13 @@ type ServerResponse struct {
 	Data string `json:"data"`
 }
 
-type App interface {
-	Authorize(core.AuthorizeInput) bool
-	ResetBucket()
-	AddToWhitelist(core.SubnetInput) error
-	AddToBlacklist(core.SubnetInput) error
-	RemoveFromWhitelist(core.SubnetInput) error
-	RemoveFromBlacklist(core.SubnetInput) error
-}
-
 type Handler struct {
-	App App
+	services *services.Services
 }
 
-func NewHandler(app App) *Handler {
+func NewHandler(services *services.Services) *Handler {
 	return &Handler{
-		App: app,
+		services: services,
 	}
 }
 
@@ -59,7 +51,7 @@ func (h *Handler) Authorize(c *gin.Context) {
 		return
 	}
 
-	res := h.App.Authorize(authInput)
+	res := h.services.Auth.Authorize(authInput)
 
 	if res {
 		h.setOkJSONResponse(c)
@@ -70,7 +62,7 @@ func (h *Handler) Authorize(c *gin.Context) {
 }
 
 func (h *Handler) ResetBucket(c *gin.Context) {
-	h.App.ResetBucket()
+	h.services.Bucket.ResetBucket()
 	c.JSON(http.StatusOK, ServerResponse{OkResponseMessage})
 }
 
@@ -80,7 +72,7 @@ func (h *Handler) AddToWhitelist(c *gin.Context) {
 		return
 	}
 
-	err = h.App.AddToWhitelist(subnetInput)
+	err = h.services.Whitelist.AddToWhitelist(subnetInput)
 	if err != nil {
 		h.setUnprocessableEntityJSONResponse(c, err.Error())
 		return
@@ -95,7 +87,7 @@ func (h *Handler) AddToBlacklist(c *gin.Context) {
 		return
 	}
 
-	err = h.App.AddToBlacklist(subnetInput)
+	err = h.services.Blacklist.AddToBlacklist(subnetInput)
 	if err != nil {
 		h.setUnprocessableEntityJSONResponse(c, err.Error())
 		return
@@ -110,7 +102,7 @@ func (h *Handler) RemoveFromWhitelist(c *gin.Context) {
 		return
 	}
 
-	err = h.App.RemoveFromWhitelist(subnetInput)
+	err = h.services.Whitelist.RemoveFromWhitelist(subnetInput)
 	if err != nil {
 		h.setUnprocessableEntityJSONResponse(c, err.Error())
 		return
@@ -125,7 +117,7 @@ func (h *Handler) RemoveFromBlacklist(c *gin.Context) {
 		return
 	}
 
-	err = h.App.RemoveFromBlacklist(subnetInput)
+	err = h.services.Blacklist.RemoveFromBlacklist(subnetInput)
 	if err != nil {
 		h.setUnprocessableEntityJSONResponse(c, err.Error())
 		return

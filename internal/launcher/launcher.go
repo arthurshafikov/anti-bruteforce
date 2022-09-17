@@ -5,13 +5,13 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/arthurshafikov/anti-bruteforce/internal/app"
 	"github.com/arthurshafikov/anti-bruteforce/internal/bucket"
 	"github.com/arthurshafikov/anti-bruteforce/internal/config"
 	"github.com/arthurshafikov/anti-bruteforce/internal/core"
 	"github.com/arthurshafikov/anti-bruteforce/internal/repository"
 	grcpapi "github.com/arthurshafikov/anti-bruteforce/internal/server/grpc/api"
 	"github.com/arthurshafikov/anti-bruteforce/internal/server/http"
+	"github.com/arthurshafikov/anti-bruteforce/internal/services"
 	"github.com/arthurshafikov/anti-bruteforce/pkg/logger"
 	"github.com/arthurshafikov/anti-bruteforce/pkg/postgres"
 	"golang.org/x/sync/errgroup"
@@ -31,13 +31,30 @@ func Run(config *config.Config) {
 		LimitAttemptsForPassword: config.NumberOfAttemptsForPassword,
 		LimitAttemptsForIP:       config.NumberOfAttemptsForIP,
 	})
+	group.Go(func() error {
+		bucket.Leak()
 
-	app := app.NewApp(ctx, logger, repository, bucket)
+		return nil
+	})
 
-	go grcpapi.RunGrpcServer(ctx, config.GrpcServerConfig.Address, app)
+	services := services.NewServices(&services.Dependencies{
+		Logger:      logger,
+		LeakyBucket: bucket,
+		Repository:  repository,
+	})
 
-	handler := http.NewHandler(app)
+	group.Go(func() error {
+		grcpapi.RunGrpcServer(ctx, config.GrpcServerConfig.Address, services)
+
+		return nil
+	})
+
+	handler := http.NewHandler(services)
 
 	server := http.NewServer(config.ServerConfig.Address, handler)
 	server.Serve(ctx)
+
+	if err := group.Wait(); err != nil {
+		logger.Error(err.Error())
+	}
 }

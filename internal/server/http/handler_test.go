@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/arthurshafikov/anti-bruteforce/internal/core"
-	"github.com/arthurshafikov/anti-bruteforce/internal/mocks"
+	"github.com/arthurshafikov/anti-bruteforce/internal/services"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/require"
 )
@@ -129,7 +129,7 @@ func TestRemoveFromBlacklist(t *testing.T) {
 
 func getWriterContextAndHandler() (*httptest.ResponseRecorder, *gin.Context, *Handler) {
 	gin.SetMode(gin.TestMode)
-	h := NewHandler(&mocks.App{})
+	h := NewHandler(&services.Services{}) // todo fix
 	w := httptest.NewRecorder()
 	c, _ := gin.CreateTestContext(w)
 
