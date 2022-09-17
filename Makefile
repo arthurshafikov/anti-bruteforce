@@ -30,7 +30,7 @@ down:
 	docker-compose -f ${DOCKER_COMPOSE_FILE} down --volumes
 	
 integration-tests:
-	docker-compose -f ${DOCKER_COMPOSE_TEST_FILE}  -p ${APP_TEST_NAME} --env-file ./deployments/.env.testing up --build --abort-on-container-exit --exit-code-from integration
+	docker-compose -f ${DOCKER_COMPOSE_TEST_FILE}  -p ${APP_TEST_NAME} --env-file ./deployments/.env.testing up --build --abort-on-container-exit --exit-code-from integration --attach integration
 	docker-compose -f ${DOCKER_COMPOSE_TEST_FILE}  -p ${APP_TEST_NAME} down --volumes
 
 reset-integration-tests:

@@ -6,11 +6,11 @@ import (
 	"os"
 	"strings"
 
-	"github.com/arthurshafikov/anti-bruteforce/internal/app"
 	"github.com/arthurshafikov/anti-bruteforce/internal/bucket"
 	"github.com/arthurshafikov/anti-bruteforce/internal/core"
 	"github.com/arthurshafikov/anti-bruteforce/internal/repository"
 	"github.com/arthurshafikov/anti-bruteforce/internal/server/http"
+	"github.com/arthurshafikov/anti-bruteforce/internal/services"
 	"github.com/arthurshafikov/anti-bruteforce/pkg/logger"
 	"github.com/arthurshafikov/anti-bruteforce/pkg/postgres"
 	"github.com/gin-gonic/gin"
@@ -23,7 +23,7 @@ import (
 type AppSuite struct {
 	suite.Suite
 	cancelContext context.CancelFunc
-	App           *app.App
+	Services      *services.Services
 	DB            *sqlx.DB
 	ServerEngine  *gin.Engine
 }
@@ -43,8 +43,12 @@ func (appS *AppSuite) SetupSuite() {
 
 	appS.DB = postgres.NewSqlxDB(ctx, group, os.Getenv("DSN"))
 	repository := repository.NewRepository(appS.DB)
-	appS.App = app.NewApp(ctx, logger, repository, bucket)
-	handler := http.NewHandler(appS.App)
+	appS.Services = services.NewServices(&services.Dependencies{
+		Logger:      logger,
+		LeakyBucket: bucket,
+		Repository:  repository,
+	})
+	handler := http.NewHandler(appS.Services)
 
 	server := http.NewServer(":8999", handler)
 	server.InitRoutes()
@@ -58,7 +62,7 @@ func (appS *AppSuite) TearDownTest() {
 	}
 	_, err := appS.DB.Exec(fmt.Sprintf(`TRUNCATE TABLE %s`, strings.Join(tables, ", ")))
 	require.NoError(appS.T(), err)
-	appS.App.ResetBucket()
+	appS.Services.Bucket.ResetBucket()
 }
 
 func (appS *AppSuite) TearDownSuite() {
