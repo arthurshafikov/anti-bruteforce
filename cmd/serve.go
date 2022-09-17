@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/arthurshafikov/anti-bruteforce/internal/launcher"
+	"github.com/arthurshafikov/anti-bruteforce/internal/app"
 	"github.com/spf13/cobra"
 )
 
@@ -15,6 +15,6 @@ var serveCmd = &cobra.Command{
 	Short:   "serve command runs HTTP/GRPC servers",
 	Long:    "serve command initialize app and runs HTTP/GRPC servers",
 	Run: func(cmd *cobra.Command, args []string) {
-		launcher.Run(config)
+		app.Run(config)
 	},
 }

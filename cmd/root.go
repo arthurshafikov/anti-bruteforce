@@ -12,7 +12,7 @@ import (
 var (
 	configFolder string
 	config       *configPkg.Config
-	app          *cli.AppCli
+	appCli       *cli.AppCli
 
 	rootCmd = &cobra.Command{
 		Use:   "anti-bruteforce",
@@ -35,7 +35,7 @@ func initConfig() {
 }
 
 func initGRPCClient() {
-	app = cli.NewAppCli(config.GrpcServerConfig.Address)
+	appCli = cli.NewAppCli(config.GrpcServerConfig.Address)
 }
 
 func echoErrorAndExit(err error) {

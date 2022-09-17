@@ -16,7 +16,7 @@ var bucketResetCmd = &cobra.Command{
 	Short:   "bucket-reset resets login/password/ip bucket",
 	Long:    "bucket-reset resets login/password/ip bucket",
 	Run: func(cmd *cobra.Command, args []string) {
-		err := app.ResetBucket()
+		err := appCli.ResetBucket()
 		if err != nil {
 			echoErrorAndExit(err)
 		}
