@@ -9,7 +9,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/arthurshafikov/anti-bruteforce/internal/models"
+	"github.com/arthurshafikov/anti-bruteforce/internal/core"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 )
@@ -83,7 +83,7 @@ func (h *appSuiteHandler) TestAddToBlacklistAndTryToAuthorize() {
 
 func (h *appSuiteHandler) TestAddToBlacklistWrongSubnetFormat() {
 	subnetStr := "asfasfafs"
-	subnet := getJSONBody(h.T(), models.SubnetInput{
+	subnet := getJSONBody(h.T(), core.SubnetInput{
 		Subnet: subnetStr,
 	})
 
@@ -145,7 +145,7 @@ func (h *appSuiteHandler) TestAddAndRemoveFromWhitelist() {
 	require.Equal(h.T(), successResponse, body)
 }
 
-func (h *appSuiteHandler) tryToAuthorize(authorizeInput models.AuthorizeInput) (int, string) {
+func (h *appSuiteHandler) tryToAuthorize(authorizeInput core.AuthorizeInput) (int, string) {
 	recorder := h.makeServerHTTPRequest(http.MethodPost, "/authorize", bytes.NewBuffer(getJSONBody(h.T(), authorizeInput)))
 
 	return h.getStatusCodeAndBodyFromRecorder(recorder)

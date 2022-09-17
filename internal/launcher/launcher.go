@@ -8,7 +8,7 @@ import (
 	"github.com/arthurshafikov/anti-bruteforce/internal/app"
 	"github.com/arthurshafikov/anti-bruteforce/internal/bucket"
 	"github.com/arthurshafikov/anti-bruteforce/internal/config"
-	"github.com/arthurshafikov/anti-bruteforce/internal/models"
+	"github.com/arthurshafikov/anti-bruteforce/internal/core"
 	grcpapi "github.com/arthurshafikov/anti-bruteforce/internal/server/grpc/api"
 	"github.com/arthurshafikov/anti-bruteforce/internal/server/http"
 	"github.com/arthurshafikov/anti-bruteforce/internal/storage"
@@ -23,7 +23,7 @@ func Run(config *config.Config) {
 	storage := storage.NewStorage(config.StorageConfig.Dsn)
 	storage.Connect(ctx)
 
-	bucket := bucket.NewLeakyBucket(ctx, models.AuthorizeLimits{
+	bucket := bucket.NewLeakyBucket(ctx, core.AuthorizeLimits{
 		LimitAttemptsForLogin:    config.NumberOfAttemptsForLogin,
 		LimitAttemptsForPassword: config.NumberOfAttemptsForPassword,
 		LimitAttemptsForIP:       config.NumberOfAttemptsForIP,

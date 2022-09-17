@@ -1,4 +1,4 @@
-package models
+package core
 
 type AuthorizeInput struct {
 	Login    string `json:"login" binding:"required"`

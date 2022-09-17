@@ -3,16 +3,16 @@ package api
 import (
 	"context"
 
-	"github.com/arthurshafikov/anti-bruteforce/internal/models"
+	"github.com/arthurshafikov/anti-bruteforce/internal/core"
 	"github.com/arthurshafikov/anti-bruteforce/internal/server/grpc/generated"
 )
 
 type App interface {
 	ResetBucket()
-	AddToWhitelist(models.SubnetInput) error
-	AddToBlacklist(models.SubnetInput) error
-	RemoveFromWhitelist(models.SubnetInput) error
-	RemoveFromBlacklist(models.SubnetInput) error
+	AddToWhitelist(core.SubnetInput) error
+	AddToBlacklist(core.SubnetInput) error
+	RemoveFromWhitelist(core.SubnetInput) error
+	RemoveFromBlacklist(core.SubnetInput) error
 }
 
 var successResponse = &generated.ServerResponse{
@@ -34,7 +34,7 @@ func (a *AppService) AddToWhitelist(
 	ctx context.Context,
 	req *generated.SubnetRequest,
 ) (*generated.ServerResponse, error) {
-	err := a.App.AddToWhitelist(models.SubnetInput{
+	err := a.App.AddToWhitelist(core.SubnetInput{
 		Subnet: req.Subnet,
 	})
 	if err != nil {
@@ -48,7 +48,7 @@ func (a *AppService) AddToBlacklist(
 	ctx context.Context,
 	req *generated.SubnetRequest,
 ) (*generated.ServerResponse, error) {
-	err := a.App.AddToBlacklist(models.SubnetInput{
+	err := a.App.AddToBlacklist(core.SubnetInput{
 		Subnet: req.Subnet,
 	})
 	if err != nil {
@@ -62,7 +62,7 @@ func (a *AppService) RemoveFromWhitelist(
 	ctx context.Context,
 	req *generated.SubnetRequest,
 ) (*generated.ServerResponse, error) {
-	err := a.App.RemoveFromWhitelist(models.SubnetInput{
+	err := a.App.RemoveFromWhitelist(core.SubnetInput{
 		Subnet: req.Subnet,
 	})
 	if err != nil {
@@ -76,7 +76,7 @@ func (a *AppService) RemoveFromBlacklist(
 	ctx context.Context,
 	req *generated.SubnetRequest,
 ) (*generated.ServerResponse, error) {
-	err := a.App.RemoveFromBlacklist(models.SubnetInput{
+	err := a.App.RemoveFromBlacklist(core.SubnetInput{
 		Subnet: req.Subnet,
 	})
 	if err != nil {

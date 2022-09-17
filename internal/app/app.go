@@ -3,7 +3,7 @@ package app
 import (
 	"context"
 
-	"github.com/arthurshafikov/anti-bruteforce/internal/models"
+	"github.com/arthurshafikov/anti-bruteforce/internal/core"
 )
 
 type Storage interface {
@@ -23,7 +23,7 @@ type Logger interface {
 }
 
 type LeakyBucket interface {
-	Add(models.AuthorizeInput) bool
+	Add(core.AuthorizeInput) bool
 	Leak()
 	ResetResetBucketTicker()
 }
@@ -44,7 +44,7 @@ func NewApp(ctx context.Context, logger Logger, storage Storage, bucket LeakyBuc
 	}
 }
 
-func (app *App) Authorize(input models.AuthorizeInput) bool {
+func (app *App) Authorize(input core.AuthorizeInput) bool {
 	res, err := app.Storage.CheckIfIPInBlacklist(input.IP)
 	if err != nil {
 		app.Logger.Error(err.Error())
@@ -70,7 +70,7 @@ func (app *App) ResetBucket() {
 	app.LeakyBucket.ResetResetBucketTicker()
 }
 
-func (app *App) AddToWhitelist(subnetInput models.SubnetInput) error {
+func (app *App) AddToWhitelist(subnetInput core.SubnetInput) error {
 	err := app.Storage.AddToWhitelist(subnetInput.Subnet)
 	if err != nil {
 		return err
@@ -79,7 +79,7 @@ func (app *App) AddToWhitelist(subnetInput models.SubnetInput) error {
 	return nil
 }
 
-func (app *App) AddToBlacklist(subnetInput models.SubnetInput) error {
+func (app *App) AddToBlacklist(subnetInput core.SubnetInput) error {
 	err := app.Storage.AddToBlacklist(subnetInput.Subnet)
 	if err != nil {
 		return err
@@ -88,7 +88,7 @@ func (app *App) AddToBlacklist(subnetInput models.SubnetInput) error {
 	return nil
 }
 
-func (app *App) RemoveFromWhitelist(subnetInput models.SubnetInput) error {
+func (app *App) RemoveFromWhitelist(subnetInput core.SubnetInput) error {
 	err := app.Storage.RemoveFromWhitelist(subnetInput.Subnet)
 	if err != nil {
 		return err
@@ -97,7 +97,7 @@ func (app *App) RemoveFromWhitelist(subnetInput models.SubnetInput) error {
 	return nil
 }
 
-func (app *App) RemoveFromBlacklist(subnetInput models.SubnetInput) error {
+func (app *App) RemoveFromBlacklist(subnetInput core.SubnetInput) error {
 	err := app.Storage.RemoveFromBlacklist(subnetInput.Subnet)
 	if err != nil {
 		return err

@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/arthurshafikov/anti-bruteforce/internal/models"
+	"github.com/arthurshafikov/anti-bruteforce/internal/core"
 )
 
 const (
@@ -31,7 +31,7 @@ type LeakyBucket struct {
 	resetBucketsTicker *time.Ticker
 }
 
-func NewLeakyBucket(ctx context.Context, authLimits models.AuthorizeLimits) *LeakyBucket {
+func NewLeakyBucket(ctx context.Context, authLimits core.AuthorizeLimits) *LeakyBucket {
 	resetBucketsTicker := time.NewTicker(resetBucketInterval)
 	go func() {
 		<-ctx.Done()
@@ -63,7 +63,7 @@ func NewLeakyBucket(ctx context.Context, authLimits models.AuthorizeLimits) *Lea
 	}
 }
 
-func (lb *LeakyBucket) Add(input models.AuthorizeInput) bool {
+func (lb *LeakyBucket) Add(input core.AuthorizeInput) bool {
 	return lb.addLogin(input.Login) && lb.addIP(input.IP) && lb.addPassword(input.Password)
 }
 

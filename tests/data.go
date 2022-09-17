@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/arthurshafikov/anti-bruteforce/internal/models"
+	"github.com/arthurshafikov/anti-bruteforce/internal/core"
 	"github.com/stretchr/testify/require"
 )
 
@@ -21,13 +21,13 @@ var (
 	testPassword = "testPass"
 	testSubnet   = "198.24.15.0/24"
 
-	authorizeInput = models.AuthorizeInput{
+	authorizeInput = core.AuthorizeInput{
 		Login:    testLogin,
 		Password: testPassword,
 		IP:       testSubnet,
 	}
 
-	subnetInput = models.SubnetInput{
+	subnetInput = core.SubnetInput{
 		Subnet: testSubnet,
 	}
 )

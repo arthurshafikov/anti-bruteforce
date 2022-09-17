@@ -5,11 +5,11 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/arthurshafikov/anti-bruteforce/internal/models"
+	"github.com/arthurshafikov/anti-bruteforce/internal/core"
 	"github.com/stretchr/testify/require"
 )
 
-var authInput = models.AuthorizeInput{
+var authInput = core.AuthorizeInput{
 	Login:    "testlogin",
 	Password: "testpass",
 	IP:       "127.0.0.1",
@@ -60,7 +60,7 @@ func TestConcurrentAddLogin(t *testing.T) {
 }
 
 func getLeakyBucketWithLimits(limitLogin, limitPass, limitIP int64) *LeakyBucket {
-	return NewLeakyBucket(context.Background(), models.AuthorizeLimits{
+	return NewLeakyBucket(context.Background(), core.AuthorizeLimits{
 		LimitAttemptsForLogin:    limitLogin,
 		LimitAttemptsForPassword: limitPass,
 		LimitAttemptsForIP:       limitIP,

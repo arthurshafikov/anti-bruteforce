@@ -7,8 +7,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/arthurshafikov/anti-bruteforce/internal/core"
 	"github.com/arthurshafikov/anti-bruteforce/internal/mocks"
-	"github.com/arthurshafikov/anti-bruteforce/internal/models"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/require"
 )
@@ -138,7 +138,7 @@ func getWriterContextAndHandler() (*httptest.ResponseRecorder, *gin.Context, *Ha
 
 func getSubnetJSONBody(t *testing.T) []byte {
 	t.Helper()
-	jsonBody, err := json.Marshal(models.SubnetInput{
+	jsonBody, err := json.Marshal(core.SubnetInput{
 		Subnet: "198.24.15.0/24",
 	})
 	require.NoError(t, err)
@@ -148,7 +148,7 @@ func getSubnetJSONBody(t *testing.T) []byte {
 
 func getAuthorizeJSONBody(t *testing.T) []byte {
 	t.Helper()
-	jsonBody, err := json.Marshal(models.AuthorizeInput{
+	jsonBody, err := json.Marshal(core.AuthorizeInput{
 		Login:    "testlogin",
 		Password: "testpass",
 		IP:       "198.24.15.10",

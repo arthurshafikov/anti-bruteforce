@@ -3,7 +3,7 @@ package http
 import (
 	"net/http"
 
-	"github.com/arthurshafikov/anti-bruteforce/internal/models"
+	"github.com/arthurshafikov/anti-bruteforce/internal/core"
 	"github.com/gin-gonic/gin"
 )
 
@@ -29,12 +29,12 @@ type ServerResponse struct {
 }
 
 type App interface {
-	Authorize(models.AuthorizeInput) bool
+	Authorize(core.AuthorizeInput) bool
 	ResetBucket()
-	AddToWhitelist(models.SubnetInput) error
-	AddToBlacklist(models.SubnetInput) error
-	RemoveFromWhitelist(models.SubnetInput) error
-	RemoveFromBlacklist(models.SubnetInput) error
+	AddToWhitelist(core.SubnetInput) error
+	AddToBlacklist(core.SubnetInput) error
+	RemoveFromWhitelist(core.SubnetInput) error
+	RemoveFromBlacklist(core.SubnetInput) error
 }
 
 type Handler struct {
@@ -52,7 +52,7 @@ func (h *Handler) Home(c *gin.Context) {
 }
 
 func (h *Handler) Authorize(c *gin.Context) {
-	var authInput models.AuthorizeInput
+	var authInput core.AuthorizeInput
 	err := c.ShouldBindJSON(&authInput)
 	if err != nil {
 		h.setUnprocessableEntityJSONResponse(c, WrongAuthorizeInputErrorMessage)
@@ -134,12 +134,12 @@ func (h *Handler) RemoveFromBlacklist(c *gin.Context) {
 	h.setOkJSONResponse(c)
 }
 
-func (h *Handler) getSubnetInput(c *gin.Context) (models.SubnetInput, error) {
-	var subnetInput models.SubnetInput
+func (h *Handler) getSubnetInput(c *gin.Context) (core.SubnetInput, error) {
+	var subnetInput core.SubnetInput
 	err := c.ShouldBindJSON(&subnetInput)
 	if err != nil {
 		h.setUnprocessableEntityJSONResponse(c, err.Error())
-		return models.SubnetInput{}, err
+		return core.SubnetInput{}, err
 	}
 
 	return subnetInput, nil

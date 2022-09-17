@@ -6,7 +6,7 @@ import (
 
 	"github.com/arthurshafikov/anti-bruteforce/internal/app"
 	"github.com/arthurshafikov/anti-bruteforce/internal/bucket"
-	"github.com/arthurshafikov/anti-bruteforce/internal/models"
+	"github.com/arthurshafikov/anti-bruteforce/internal/core"
 	"github.com/arthurshafikov/anti-bruteforce/internal/server/http"
 	"github.com/arthurshafikov/anti-bruteforce/internal/storage"
 	"github.com/arthurshafikov/anti-bruteforce/pkg/logger"
@@ -29,7 +29,7 @@ func (appS *AppSuite) SetupSuite() {
 	storage := storage.NewStorage(os.Getenv("DSN"))
 	storage.Connect(ctx)
 
-	bucket := bucket.NewLeakyBucket(ctx, models.AuthorizeLimits{
+	bucket := bucket.NewLeakyBucket(ctx, core.AuthorizeLimits{
 		LimitAttemptsForLogin:    int64(limitAttemptsForLogin),
 		LimitAttemptsForPassword: int64(limitAttemptsForPassword),
 		LimitAttemptsForIP:       int64(limitAttemptsForIP),
