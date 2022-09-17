@@ -16,12 +16,7 @@ func NewWhitelistService(repo repository.Whitelist) *WhitelistService {
 }
 
 func (ws *WhitelistService) AddToWhitelist(subnetInput core.SubnetInput) error {
-	err := ws.repo.AddToWhitelist(subnetInput.Subnet)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return ws.repo.AddToWhitelist(subnetInput.Subnet)
 }
 
 func (ws *WhitelistService) CheckIfIPInWhitelist(ip string) (bool, error) {
@@ -29,10 +24,5 @@ func (ws *WhitelistService) CheckIfIPInWhitelist(ip string) (bool, error) {
 }
 
 func (ws *WhitelistService) RemoveFromWhitelist(subnetInput core.SubnetInput) error {
-	err := ws.repo.RemoveFromWhitelist(subnetInput.Subnet)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return ws.repo.RemoveFromWhitelist(subnetInput.Subnet)
 }

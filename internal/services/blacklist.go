@@ -16,12 +16,7 @@ func NewBlacklistService(repo repository.Blacklist) *BlacklistService {
 }
 
 func (bs *BlacklistService) AddToBlacklist(subnetInput core.SubnetInput) error {
-	err := bs.repo.AddToBlacklist(subnetInput.Subnet)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return bs.repo.AddToBlacklist(subnetInput.Subnet)
 }
 
 func (bs *BlacklistService) CheckIfIPInBlacklist(ip string) (bool, error) {
@@ -29,10 +24,5 @@ func (bs *BlacklistService) CheckIfIPInBlacklist(ip string) (bool, error) {
 }
 
 func (bs *BlacklistService) RemoveFromBlacklist(subnetInput core.SubnetInput) error {
-	err := bs.repo.RemoveFromBlacklist(subnetInput.Subnet)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return bs.repo.RemoveFromBlacklist(subnetInput.Subnet)
 }
