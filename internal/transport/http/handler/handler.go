@@ -39,6 +39,15 @@ func NewHandler(services *services.Services) *Handler {
 	}
 }
 
+func (h *Handler) InitRoutes(engine *gin.Engine) {
+	engine.GET("/", h.Home)
+
+	h.initAuthRoutes(engine)
+	h.initBlacklistRoutes(engine)
+	h.initWhitelistRoutes(engine)
+	h.initBucketRoutes(engine)
+}
+
 func (h *Handler) Home(c *gin.Context) {
 	h.setOkJSONResponse(c)
 }

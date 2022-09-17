@@ -6,6 +6,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func (h *Handler) initBlacklistRoutes(engine *gin.Engine) {
+	engine.POST("/blacklist/add", h.AddToBlacklist)
+	engine.DELETE("/blacklist/remove", h.RemoveFromBlacklist)
+}
+
 func (h *Handler) AddToBlacklist(c *gin.Context) {
 	subnetInput, err := h.getSubnetInput(c)
 	if err != nil {

@@ -6,6 +6,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func (h *Handler) initWhitelistRoutes(engine *gin.Engine) {
+	engine.POST("/whitelist/add", h.AddToWhitelist)
+	engine.DELETE("/whitelist/remove", h.RemoveFromWhitelist)
+}
+
 func (h *Handler) AddToWhitelist(c *gin.Context) {
 	subnetInput, err := h.getSubnetInput(c)
 	if err != nil {

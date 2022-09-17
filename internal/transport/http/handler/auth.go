@@ -7,6 +7,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func (h *Handler) initAuthRoutes(engine *gin.Engine) {
+	engine.POST("/authorize", h.Authorize)
+}
+
 func (h *Handler) Authorize(c *gin.Context) {
 	var authInput core.AuthorizeInput
 

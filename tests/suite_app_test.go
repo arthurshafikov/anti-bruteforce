@@ -12,7 +12,6 @@ import (
 	"github.com/arthurshafikov/anti-bruteforce/internal/logger"
 	"github.com/arthurshafikov/anti-bruteforce/internal/repository"
 	"github.com/arthurshafikov/anti-bruteforce/internal/services"
-	"github.com/arthurshafikov/anti-bruteforce/internal/transport/http"
 	"github.com/arthurshafikov/anti-bruteforce/internal/transport/http/handler"
 	"github.com/arthurshafikov/anti-bruteforce/pkg/postgres"
 	"github.com/gin-gonic/gin"
@@ -64,9 +63,9 @@ func (appS *AppSuite) SetupSuite() {
 	})
 	handler := handler.NewHandler(appS.Services)
 
-	server := http.NewServer(handler)
-	server.InitRoutes()
-	appS.ServerEngine = server.Engine
+	engine := gin.Default()
+	handler.InitRoutes(engine)
+	appS.ServerEngine = engine
 }
 
 func (appS *AppSuite) TearDownTest() {

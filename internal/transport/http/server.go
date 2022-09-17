@@ -12,34 +12,27 @@ import (
 )
 
 type Handler interface {
-	Home(*gin.Context)
-	Authorize(*gin.Context)
-	ResetBucket(*gin.Context)
-	AddToWhitelist(*gin.Context)
-	AddToBlacklist(*gin.Context)
-	RemoveFromWhitelist(*gin.Context)
-	RemoveFromBlacklist(*gin.Context)
+	InitRoutes(engine *gin.Engine)
 }
 
 type Server struct {
 	httpSrv *http.Server
-	Engine  *gin.Engine
 	handler Handler
 }
 
 func NewServer(handler Handler) *Server {
 	return &Server{
-		Engine:  gin.Default(),
 		handler: handler,
 	}
 }
 
 func (s *Server) Serve(ctx context.Context, g *errgroup.Group, address string) {
-	s.InitRoutes()
+	engine := gin.Default()
+	s.handler.InitRoutes(engine)
 
 	s.httpSrv = &http.Server{
 		Addr:    address,
-		Handler: s.Engine,
+		Handler: engine,
 	}
 
 	g.Go(func() error {
@@ -60,14 +53,4 @@ func (s *Server) shutdown() error {
 	defer cancel()
 
 	return s.httpSrv.Shutdown(ctx)
-}
-
-func (s *Server) InitRoutes() {
-	s.Engine.GET("/", s.handler.Home)
-	s.Engine.POST("/authorize", s.handler.Authorize)
-	s.Engine.POST("/bucket/reset", s.handler.ResetBucket)
-	s.Engine.POST("/whitelist/add", s.handler.AddToWhitelist)
-	s.Engine.DELETE("/whitelist/remove", s.handler.RemoveFromWhitelist)
-	s.Engine.POST("/blacklist/add", s.handler.AddToBlacklist)
-	s.Engine.DELETE("/blacklist/remove", s.handler.RemoveFromBlacklist)
 }
