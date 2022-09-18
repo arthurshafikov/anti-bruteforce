@@ -17,6 +17,12 @@ type AppService struct {
 	generated.UnimplementedAppServiceServer
 }
 
+func NewAppService(services *services.Services) *AppService {
+	return &AppService{
+		services: services,
+	}
+}
+
 func (a *AppService) ResetBucket(ctx context.Context, req *generated.EmptyRequest) (*generated.ServerResponse, error) {
 	a.services.Bucket.ResetBucket()
 

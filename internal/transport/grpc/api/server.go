@@ -17,11 +17,9 @@ func RunGrpcServer(ctx context.Context, g *errgroup.Group, address string, servi
 		log.Fatalln(err)
 	}
 
-	a := AppService{
-		services: services,
-	}
+	appService := NewAppService(services)
 	grpcServer := grpc.NewServer()
-	generated.RegisterAppServiceServer(grpcServer, &a)
+	generated.RegisterAppServiceServer(grpcServer, appService)
 
 	g.Go(func() error {
 		<-ctx.Done()
