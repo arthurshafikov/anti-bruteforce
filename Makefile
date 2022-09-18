@@ -40,5 +40,6 @@ reset-integration-tests:
 	docker-compose -f ${DOCKER_COMPOSE_TEST_FILE}  -p ${APP_TEST_NAME} down --volumes	
 
 mocks:
+	mockgen -source=./internal/repository/repository.go -destination ./internal/repository/mocks/mock.go
 	mockgen -source=./internal/services/services.go -destination ./internal/services/mocks/mock.go
 	mockgen -source=./internal/transport/http/server.go -destination ./internal/transport/http/mocks/mock.go
