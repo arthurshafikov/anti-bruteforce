@@ -9,138 +9,56 @@ import (
 
 	"github.com/arthurshafikov/anti-bruteforce/internal/core"
 	"github.com/arthurshafikov/anti-bruteforce/internal/services"
+	mock_services "github.com/arthurshafikov/anti-bruteforce/internal/services/mocks"
 	"github.com/gin-gonic/gin"
+	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 )
 
-func TestAuthorize(t *testing.T) {
-	t.Run("without json body", func(t *testing.T) {
-		w, c, h := getWriterContextAndHandler()
-		c.Request = httptest.NewRequest(http.MethodPost, "/authorize", nil)
+var (
+	authorizeInput = core.AuthorizeInput{
+		Login:    "testlogin",
+		Password: "testpass",
+		IP:       "198.24.15.10",
+	}
+	subnetInput = core.SubnetInput{
+		Subnet: "198.24.15.0/24",
+	}
+)
 
-		h.Authorize(c)
-
-		require.Equal(t, http.StatusUnprocessableEntity, w.Code)
-	})
-
-	t.Run("with json body", func(t *testing.T) {
-		w, c, h := getWriterContextAndHandler()
-		jsonBody := getAuthorizeJSONBody(t)
-		c.Request = httptest.NewRequest(http.MethodPost, "/authorize", bytes.NewBuffer(jsonBody))
-
-		h.Authorize(c)
-
-		require.Equal(t, http.StatusOK, w.Code)
-	})
+type MockBag struct {
+	auth      *mock_services.MockAuth
+	blacklist *mock_services.MockBlacklist
+	bucket    *mock_services.MockBucket
+	whitelist *mock_services.MockWhitelist
 }
 
-func TestResetBucket(t *testing.T) {
-	w, c, h := getWriterContextAndHandler()
-	c.Request = httptest.NewRequest(http.MethodPost, "/bucket/reset", nil)
-
-	h.ResetBucket(c)
-
-	require.Equal(t, http.StatusOK, w.Code)
-}
-
-func TestAddToWhitelist(t *testing.T) {
-	t.Run("without json body", func(t *testing.T) {
-		w, c, h := getWriterContextAndHandler()
-		c.Request = httptest.NewRequest(http.MethodPost, "/whitelist/add", nil)
-
-		h.AddToWhitelist(c)
-
-		require.Equal(t, http.StatusUnprocessableEntity, w.Code)
-	})
-
-	t.Run("with json body", func(t *testing.T) {
-		w, c, h := getWriterContextAndHandler()
-		jsonBody := getSubnetJSONBody(t)
-		c.Request = httptest.NewRequest(http.MethodPost, "/whitelist/add", bytes.NewBuffer(jsonBody))
-
-		h.AddToWhitelist(c)
-
-		require.Equal(t, http.StatusCreated, w.Code)
-	})
-}
-
-func TestRemoveFromWhitelist(t *testing.T) {
-	t.Run("without json body", func(t *testing.T) {
-		w, c, h := getWriterContextAndHandler()
-		c.Request = httptest.NewRequest(http.MethodDelete, "/whitelist/remove", nil)
-
-		h.RemoveFromWhitelist(c)
-
-		require.Equal(t, http.StatusUnprocessableEntity, w.Code)
-	})
-
-	t.Run("with json body", func(t *testing.T) {
-		w, c, h := getWriterContextAndHandler()
-		jsonBody := getSubnetJSONBody(t)
-		c.Request = httptest.NewRequest(http.MethodDelete, "/whitelist/remove", bytes.NewBuffer(jsonBody))
-
-		h.RemoveFromWhitelist(c)
-
-		require.Equal(t, http.StatusOK, w.Code)
-	})
-}
-
-func TestAddToBlacklist(t *testing.T) {
-	t.Run("without json body", func(t *testing.T) {
-		w, c, h := getWriterContextAndHandler()
-		c.Request = httptest.NewRequest(http.MethodPost, "/blacklist/add", nil)
-
-		h.AddToBlacklist(c)
-
-		require.Equal(t, http.StatusUnprocessableEntity, w.Code)
-	})
-
-	t.Run("with json body", func(t *testing.T) {
-		w, c, h := getWriterContextAndHandler()
-		jsonBody := getSubnetJSONBody(t)
-		c.Request = httptest.NewRequest(http.MethodPost, "/blacklist/add", bytes.NewBuffer(jsonBody))
-
-		h.AddToBlacklist(c)
-
-		require.Equal(t, http.StatusCreated, w.Code)
-	})
-}
-
-func TestRemoveFromBlacklist(t *testing.T) {
-	t.Run("without json body", func(t *testing.T) {
-		w, c, h := getWriterContextAndHandler()
-		c.Request = httptest.NewRequest(http.MethodDelete, "/blacklist/remove", nil)
-
-		h.RemoveFromBlacklist(c)
-
-		require.Equal(t, http.StatusUnprocessableEntity, w.Code)
-	})
-
-	t.Run("with json body", func(t *testing.T) {
-		w, c, h := getWriterContextAndHandler()
-		jsonBody := getSubnetJSONBody(t)
-		c.Request = httptest.NewRequest(http.MethodDelete, "/blacklist/remove", bytes.NewBuffer(jsonBody))
-
-		h.RemoveFromBlacklist(c)
-
-		require.Equal(t, http.StatusOK, w.Code)
-	})
-}
-
-func getWriterContextAndHandler() (*httptest.ResponseRecorder, *gin.Context, *Handler) {
+func getWriterContextAndHandlerWithMocks(t *testing.T) (*httptest.ResponseRecorder, *gin.Context, *Handler, *MockBag) {
+	t.Helper()
 	gin.SetMode(gin.TestMode)
-	h := NewHandler(&services.Services{}) // todo fix
+
+	ctrl := gomock.NewController(t)
+	mockBag := &MockBag{
+		auth:      mock_services.NewMockAuth(ctrl),
+		blacklist: mock_services.NewMockBlacklist(ctrl),
+		bucket:    mock_services.NewMockBucket(ctrl),
+		whitelist: mock_services.NewMockWhitelist(ctrl),
+	}
+	h := NewHandler(&services.Services{
+		Auth:      mockBag.auth,
+		Blacklist: mockBag.blacklist,
+		Whitelist: mockBag.whitelist,
+		Bucket:    mockBag.bucket,
+	})
 	w := httptest.NewRecorder()
 	c, _ := gin.CreateTestContext(w)
 
-	return w, c, h
+	return w, c, h, mockBag
 }
 
 func getSubnetJSONBody(t *testing.T) []byte {
 	t.Helper()
-	jsonBody, err := json.Marshal(core.SubnetInput{
-		Subnet: "198.24.15.0/24",
-	})
+	jsonBody, err := json.Marshal(subnetInput)
 	require.NoError(t, err)
 
 	return jsonBody
@@ -148,12 +66,41 @@ func getSubnetJSONBody(t *testing.T) []byte {
 
 func getAuthorizeJSONBody(t *testing.T) []byte {
 	t.Helper()
-	jsonBody, err := json.Marshal(core.AuthorizeInput{
-		Login:    "testlogin",
-		Password: "testpass",
-		IP:       "198.24.15.10",
-	})
+	jsonBody, err := json.Marshal(authorizeInput)
 	require.NoError(t, err)
 
 	return jsonBody
+}
+
+func TestHome(t *testing.T) {
+	w, c, h, _ := getWriterContextAndHandlerWithMocks(t)
+	c.Request = httptest.NewRequest(http.MethodGet, "/", nil)
+
+	h.Home(c)
+
+	require.Equal(t, http.StatusOK, w.Code)
+}
+
+func TestGetSubnetInput(t *testing.T) {
+	t.Run("without json body", func(t *testing.T) {
+		w, c, h, _ := getWriterContextAndHandlerWithMocks(t)
+		c.Request = httptest.NewRequest(http.MethodGet, "/", nil)
+
+		_, err := h.getSubnetInput(c)
+
+		require.Error(t, err)
+		require.Equal(t, http.StatusUnprocessableEntity, w.Code)
+	})
+
+	t.Run("with json body", func(t *testing.T) {
+		w, c, h, _ := getWriterContextAndHandlerWithMocks(t)
+		jsonBody := getSubnetJSONBody(t)
+		c.Request = httptest.NewRequest(http.MethodGet, "/", bytes.NewBuffer(jsonBody))
+
+		result, err := h.getSubnetInput(c)
+
+		require.NoError(t, err)
+		require.Equal(t, subnetInput, result)
+		require.Equal(t, http.StatusOK, w.Code)
+	})
 }

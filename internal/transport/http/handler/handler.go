@@ -55,12 +55,12 @@ func (h *Handler) Home(c *gin.Context) {
 func (h *Handler) getSubnetInput(c *gin.Context) (core.SubnetInput, error) {
 	var subnetInput core.SubnetInput
 
-	if err := c.ShouldBindJSON(&subnetInput); err != nil {
+	err := c.ShouldBindJSON(&subnetInput)
+	if err != nil {
 		h.setUnprocessableEntityJSONResponse(c, err.Error())
-		return core.SubnetInput{}, err
 	}
 
-	return subnetInput, nil
+	return subnetInput, err
 }
 
 func (h *Handler) setUnprocessableEntityJSONResponse(c *gin.Context, data string) {
