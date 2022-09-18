@@ -3,7 +3,7 @@ package http
 import (
 	"context"
 	"errors"
-	"log"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -15,13 +15,20 @@ type Handler interface {
 	InitRoutes(engine *gin.Engine)
 }
 
+type Logger interface {
+	Error(err error)
+	Info(msg string)
+}
+
 type Server struct {
+	logger  Logger
 	httpSrv *http.Server
 	handler Handler
 }
 
-func NewServer(handler Handler) *Server {
+func NewServer(logger Logger, handler Handler) *Server {
 	return &Server{
+		logger:  logger,
 		handler: handler,
 	}
 }
@@ -42,12 +49,12 @@ func (s *Server) Serve(ctx context.Context, g *errgroup.Group, address string) {
 	})
 
 	if err := s.httpSrv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-		log.Println("Could not start listener ", err)
+		s.logger.Error(fmt.Errorf("could not start listener %w", err))
 	}
 }
 
 func (s *Server) shutdown() error {
-	log.Println("Shutdown Server ...")
+	s.logger.Info("Shutdown Server ...")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()

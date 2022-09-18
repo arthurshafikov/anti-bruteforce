@@ -64,5 +64,5 @@ func Run(config *config.Config) {
 
 	handler := handler.NewHandler(services)
 
-	http.NewServer(handler).Serve(ctx, group, config.ServerConfig.Address)
+	http.NewServer(logger, handler).Serve(ctx, group, config.ServerConfig.Address)
 }
