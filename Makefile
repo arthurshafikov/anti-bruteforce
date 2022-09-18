@@ -41,3 +41,4 @@ reset-integration-tests:
 
 mocks:
 	mockgen -source=./internal/services/services.go -destination ./internal/services/mocks/mock.go
+	mockgen -source=./internal/transport/http/server.go -destination ./internal/transport/http/mocks/mock.go
