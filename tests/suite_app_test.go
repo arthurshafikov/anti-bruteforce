@@ -36,7 +36,7 @@ func (appS *AppSuite) SetupSuite() {
 
 	logger := logger.NewLogger("DEBUG")
 
-	resetBucketsTicker := time.NewTicker(time.Second * 60) // todo config
+	resetBucketsTicker := time.NewTicker(time.Second * 60)
 	group.Go(func() error {
 		<-ctx.Done()
 		resetBucketsTicker.Stop()

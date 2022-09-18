@@ -35,7 +35,7 @@ func Run(config *config.Config) {
 	db := postgres.NewSqlxDB(ctx, group, config.DatabaseConfig.DSN)
 	repository := repository.NewRepository(db)
 
-	resetBucketsTicker := time.NewTicker(time.Second * 60) // todo config
+	resetBucketsTicker := time.NewTicker(time.Second * time.Duration(config.LeakyBucketConfig.ResetIntervalInSeconds))
 	group.Go(func() error {
 		<-ctx.Done()
 		resetBucketsTicker.Stop()

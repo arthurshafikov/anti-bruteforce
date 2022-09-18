@@ -21,7 +21,9 @@ ServerConfig:
 GrpcServerConfig:
     Address: ":8765"
 DatabaseConfig:
-    DSN: "host=localhost user=homestead password=secret dbname=homestead sslmode=disable"`)
+    DSN: "host=localhost user=homestead password=secret dbname=homestead sslmode=disable"
+LeakyBucketConfig:
+    ResetIntervalInSeconds: 60`)
 
 	expectedAppConfig = AppConfig{
 		NumberOfAttemptsForLogin:    10,

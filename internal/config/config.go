@@ -12,6 +12,7 @@ type Config struct {
 	ServerConfig
 	GrpcServerConfig ServerConfig
 	DatabaseConfig
+	LeakyBucketConfig
 }
 
 type AppConfig struct {
@@ -31,6 +32,10 @@ type ServerConfig struct {
 
 type DatabaseConfig struct {
 	DSN string
+}
+
+type LeakyBucketConfig struct {
+	ResetIntervalInSeconds int
 }
 
 func NewConfig(configFolder string) *Config {
