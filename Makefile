@@ -1,6 +1,7 @@
 BIN := "./bin/app"
 DOCKER_COMPOSE_FILE := "./deployments/docker-compose.yml"
 DOCKER_COMPOSE_TEST_FILE := "./deployments/docker-compose.tests.yml"
+APP_NAME="anti_bruteforce"
 APP_TEST_NAME="anti_bruteforce_test"
 
 GIT_HASH := $(shell git log --format="%h" -n 1)
@@ -27,10 +28,10 @@ generate:
 	protoc -I=api --go_out=internal/server/grpc/generated --go-grpc_out=internal/server/grpc/generated api/AppService.proto
 
 up:
-	docker-compose -f ${DOCKER_COMPOSE_FILE} up -d --build
+	docker-compose -f ${DOCKER_COMPOSE_FILE} -p ${APP_NAME} up -d --build
 
 down:
-	docker-compose -f ${DOCKER_COMPOSE_FILE} down --volumes
+	docker-compose -f ${DOCKER_COMPOSE_FILE} -p ${APP_NAME} down --volumes
 	
 integration-tests:
 	docker-compose -f ${DOCKER_COMPOSE_TEST_FILE}  -p ${APP_TEST_NAME} up --build --abort-on-container-exit --exit-code-from integration --attach integration
