@@ -1,5 +1,4 @@
-# Собираем в гошке
-FROM golang:1.17-alpine as build
+FROM golang:1.18-alpine as build
 
 RUN set -ex; \
     apk update; \
@@ -19,13 +18,11 @@ ENV TEST_DIR ./tests
 
 WORKDIR ${CODE_DIR}
 
-# Кэшируем слои с модулями
 COPY go.mod .
 COPY go.sum .
 RUN go mod download
 
 COPY . ${CODE_DIR}
-
 
 # Add docker-compose-wait tool -------------------
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.7.2/wait /wait
